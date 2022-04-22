@@ -24,10 +24,10 @@ void main() {
 
   final tPokemon = Pokemon(
     name: 'name',
-    id: 'id',
+    id: 1,
     height: 0,
     weight: 10,
-    type: const ['grass'],
+    types: const ['grass'],
     stats: AllStats(
       attack: BaseStatType(name: 'attack', value: 2),
       defense: BaseStatType(name: 'defense', value: 2),
@@ -37,7 +37,7 @@ void main() {
       hp: BaseStatType(name: 'hp', value: 2),
     ),
     imageUrl: 'imageUrl',
-    isFavourite: false,
+    isFavorite: false,
   );
 
   test(

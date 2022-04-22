@@ -12,13 +12,13 @@ void main() {
         //Arrange
         final pokemon = Pokemon(
           name: 'name',
-          id: 'id',
+          id: 1,
           height: 10,
           weight: 10,
-          type: ['grass'],
+          types: const ['grass'],
           stats: _getTestStats(),
           imageUrl: 'imageUrl',
-          isFavourite: false,
+          isFavorite: false,
         );
         //Act
         final bmi = pokemon.getBMI;
@@ -34,24 +34,24 @@ void main() {
         //Arrange
         final zeroHeightPokemon = Pokemon(
           name: 'name',
-          id: 'id',
+          id: 1,
           height: 0,
           weight: 10,
-          type: ['grass'],
+          types: const ['grass'],
           stats: _getTestStats(),
           imageUrl: 'imageUrl',
-          isFavourite: false,
+          isFavorite: false,
         );
 
         final zeroWeightPokemon = Pokemon(
           name: 'name',
-          id: 'id',
+          id: 1,
           height: 20,
           weight: 0,
-          type: ['grass'],
+          types: const ['grass'],
           stats: _getTestStats(),
           imageUrl: 'imageUrl',
-          isFavourite: false,
+          isFavorite: false,
         );
         //Act
         final zeroHeightPokemonBmi = zeroHeightPokemon.getBMI;
@@ -64,25 +64,25 @@ void main() {
     );
 
     test(
-      'should test that getAveragePower returns 2.0 when all stats are 2',
+      'should test that getAveragePower returns  when all stats are 2',
       () async {
         //Arrange
-        final tPokemon = Pokemon(
+        const tPokemon = Pokemon(
           name: 'name',
-          id: 'id',
+          id: 1,
           height: 0,
           weight: 10,
-          type: ['grass'],
+          types: ['grass'],
           stats: AllStats(
             attack: BaseStatType(name: 'attack', value: 2),
             defense: BaseStatType(name: 'defense', value: 2),
-            specialAttack: BaseStatType(name: 'specialAttack', value: 2),
-            specialDefense: BaseStatType(name: 'specialDefense', value: 2),
+            specialAttack: BaseStatType(name: 'special-attack', value: 2),
+            specialDefense: BaseStatType(name: 'special-defense', value: 2),
             speed: BaseStatType(name: 'speed', value: 2),
             hp: BaseStatType(name: 'hp', value: 2),
           ),
           imageUrl: 'imageUrl',
-          isFavourite: false,
+          isFavorite: false,
         );
 
         //Act
@@ -96,7 +96,7 @@ void main() {
 }
 
 _getTestStats() {
-  return AllStats(
+  return const AllStats(
     attack: BaseStatType(name: '', value: 2),
     defense: BaseStatType(name: '', value: 2),
     specialAttack: BaseStatType(name: '', value: 2),

@@ -4,22 +4,22 @@ import 'package:pokedex/features/pokeman/domain/entities/all_stats.dart';
 
 class Pokemon extends Equatable {
   final String name;
-  final String id;
+  final int id;
   final int height;
   final int weight;
-  final List<String> type;
+  final List<String> types;
   final AllStats stats;
   final String imageUrl;
-  final bool isFavourite;
+  final bool isFavorite;
   const Pokemon({
     required this.name,
     required this.id,
     required this.height,
     required this.weight,
-    required this.type,
+    required this.types,
     required this.stats,
     required this.imageUrl,
-    required this.isFavourite,
+    required this.isFavorite,
   });
 
   double get getBMI {
@@ -42,5 +42,5 @@ class Pokemon extends Equatable {
 
   @override
   List<Object?> get props =>
-      [name, id, height, weight, type, stats, imageUrl, isFavourite];
+      [name, id, height, weight, types, stats, imageUrl, isFavorite];
 }
