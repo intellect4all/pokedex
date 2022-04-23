@@ -5,7 +5,7 @@ import 'package:pokedex/features/pokeman/domain/entities/success_entity.dart';
 
 abstract class PokemonRepository {
   Future<Either<Failure, List<Pokemon>>> getInitialPokeMons();
-  Future<Either<Failure, List<Pokemon>>> getMorePokeMons({required int offset});
+  Future<Either<Failure, List<Pokemon>>> getMorePokemons({required int offset});
   Future<Either<Failure, SuccessEntity>> addPokemonToFavoritesLocal({
     required Pokemon pokemon,
   });

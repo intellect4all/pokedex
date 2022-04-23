@@ -17,7 +17,7 @@ abstract class PokemonRemoteDataSource {
   /// [FETCH_LIMIT] is 20 by default
   ///
   /// throws a [ServerException] for failed responses
-  Future<List<PokemonModel>> getMorePokeMans({
+  Future<List<PokemonModel>> getMorePokemons({
     required int offset,
   });
 }

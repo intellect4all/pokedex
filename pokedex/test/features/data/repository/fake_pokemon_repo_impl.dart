@@ -11,7 +11,7 @@ class FakePokemonRepositoryImpl implements PokemonRepository {
   }
 
   @override
-  Future<Either<Failure, List<Pokemon>>> getMorePokeMons(
+  Future<Either<Failure, List<Pokemon>>> getMorePokemons(
       {required int offset}) {
     throw UnimplementedError();
   }

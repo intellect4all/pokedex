@@ -41,7 +41,7 @@ class MockFakePokemonRepositoryImpl extends _i1.Mock
               _FakeEither_0<_i5.Failure, List<_i6.Pokemon>>())) as _i4
           .Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>>);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>> getMorePokeMons(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>> getMorePokemons(
           {int? offset}) =>
       (super.noSuchMethod(
           Invocation.method(#getMorePokeMons, [], {#offset: offset}),

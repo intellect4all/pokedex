@@ -8,7 +8,7 @@ class FakePokemonRemoteDataSource implements PokemonRemoteDataSource {
   }
 
   @override
-  Future<List<PokemonModel>> getMorePokeMans({required int offset}) {
+  Future<List<PokemonModel>> getMorePokemons({required int offset}) {
     throw UnimplementedError();
   }
 }

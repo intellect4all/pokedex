@@ -37,7 +37,7 @@ class MockFakePokemonRemoteDataSource extends _i1.Mock
                   Future<List<_i4.PokemonModel>>.value(<_i4.PokemonModel>[]))
           as _i3.Future<List<_i4.PokemonModel>>);
   @override
-  _i3.Future<List<_i4.PokemonModel>> getMorePokeMans({int? offset}) => (super
+  _i3.Future<List<_i4.PokemonModel>> getMorePokemons({int? offset}) => (super
       .noSuchMethod(Invocation.method(#getMorePokeMans, [], {#offset: offset}),
           returnValue:
               Future<List<_i4.PokemonModel>>.value(<_i4.PokemonModel>[])) as _i3

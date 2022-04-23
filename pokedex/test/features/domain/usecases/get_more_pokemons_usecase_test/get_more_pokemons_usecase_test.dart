@@ -60,7 +60,7 @@ void main() {
     'should get more Pokemons from the api',
     () async {
       // arrange
-      when(mockPokemonRepository.getMorePokeMons(offset: 10))
+      when(mockPokemonRepository.getMorePokemons(offset: 10))
           .thenAnswer((_) async => const Right(tPokemons));
       const params = LoadMorePokemonsParams(offset: 10);
 
@@ -70,7 +70,7 @@ void main() {
       // assert
       expect(result,const Right(tPokemons));
 
-      verify(mockPokemonRepository.getMorePokeMons(offset: 10));
+      verify(mockPokemonRepository.getMorePokemons(offset: 10));
 
       verifyNoMoreInteractions(mockPokemonRepository);
     },

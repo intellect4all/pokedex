@@ -61,10 +61,37 @@ class PokemonRepositoryImpl extends PokemonRepository {
   }
 
   @override
-  Future<Either<Failure, List<Pokemon>>> getMorePokeMons(
-      {required int offset}) {
-    // TODO: implement getMorePokeMans
-    throw UnimplementedError();
+  Future<Either<Failure, List<Pokemon>>> getMorePokemons(
+      {required int offset}) async {
+    List<Pokemon> pokemons = [];
+    List<PokemonModel> remotePokemons = [];
+    List<PokemonModel> cachedFavoritePokemons = [];
+
+    networkInfo.isConnected;
+
+    try {
+      remotePokemons = await remoteDataSource.getMorePokemons(offset: offset);
+      pokemons = remotePokemons;
+      try {
+        cachedFavoritePokemons =
+            await localDataSource.getCachedFavoritePokemons();
+      } on CacheException {
+        log('Cache Exception');
+      }
+      if (cachedFavoritePokemons.isNotEmpty) {
+        for (PokemonModel favoritePokemon in cachedFavoritePokemons) {
+          int ind = remotePokemons
+              .indexWhere((element) => element.id == favoritePokemon.id);
+
+          if (ind > -1) {
+            pokemons[ind] = remotePokemons[ind].copyWith(isFavorite: true);
+          }
+        }
+      }
+      return Right(pokemons);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override
