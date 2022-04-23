@@ -63,4 +63,15 @@ class AllStatsModel extends AllStats {
           baseStats['speed'] ?? const BaseStatType(name: 'speed', value: 0),
     );
   }
+
+  List<Map<String, dynamic>> toJson() {
+    List<Map<String, dynamic>> list = [];
+    list.add(modelHp.toMap());
+    list.add(modelAttack.toMap());
+    list.add(modelDefense.toMap());
+    list.add(modelSpecialAttack.toMap());
+    list.add(modelSpecialDefense.toMap());
+    list.add(modelSpeed.toMap());
+    return list;
+  }
 }

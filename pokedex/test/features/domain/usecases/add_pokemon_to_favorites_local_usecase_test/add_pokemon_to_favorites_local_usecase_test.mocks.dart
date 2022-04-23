@@ -11,7 +11,7 @@ import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart' as _i6;
 import 'package:pokedex/features/pokeman/domain/entities/success_entity.dart'
     as _i7;
 
-import '../../../data/repository/pokeman_repo_impl.dart' as _i3;
+import '../../../data/repository/fake_pokemon_repo_impl.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,26 +25,26 @@ import '../../../data/repository/pokeman_repo_impl.dart' as _i3;
 
 class _FakeEither_0<L, R> extends _i1.Fake implements _i2.Either<L, R> {}
 
-/// A class which mocks [PokemonRepositoryImpl].
+/// A class which mocks [FakePokemonRepositoryImpl].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPokemonRepositoryImpl extends _i1.Mock
-    implements _i3.PokemonRepositoryImpl {
-  MockPokemonRepositoryImpl() {
+class MockFakePokemonRepositoryImpl extends _i1.Mock
+    implements _i3.FakePokemonRepositoryImpl {
+  MockFakePokemonRepositoryImpl() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>> getInitialPokeMans() =>
-      (super.noSuchMethod(Invocation.method(#getInitialPokeMans, []),
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>> getInitialPokeMons() =>
+      (super.noSuchMethod(Invocation.method(#getInitialPokeMons, []),
           returnValue: Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>>.value(
               _FakeEither_0<_i5.Failure, List<_i6.Pokemon>>())) as _i4
           .Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>>);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>> getMorePokeMans(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>> getMorePokeMons(
           {int? offset}) =>
       (super.noSuchMethod(
-          Invocation.method(#getMorePokeMans, [], {#offset: offset}),
+          Invocation.method(#getMorePokeMons, [], {#offset: offset}),
           returnValue: Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>>.value(
               _FakeEither_0<_i5.Failure, List<_i6.Pokemon>>())) as _i4
           .Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>>);

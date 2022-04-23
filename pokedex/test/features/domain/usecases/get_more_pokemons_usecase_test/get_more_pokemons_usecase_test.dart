@@ -7,26 +7,26 @@ import 'package:pokedex/features/pokeman/domain/entities/base_stat_type.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
 import 'package:pokedex/features/pokeman/domain/usecases/get_more_pokemons_usecase.dart';
 
-import '../../../data/repository/pokeman_repo_impl.dart';
+import '../../../data/repository/fake_pokemon_repo_impl.dart';
 import 'get_more_pokemons_usecase_test.mocks.dart';
 
-@GenerateMocks([PokemonRepositoryImpl])
+@GenerateMocks([FakePokemonRepositoryImpl])
 void main() {
   late GetMorePokemonsUseCase getMorePokemonsUseCase;
-  late PokemonRepositoryImpl mockPokemonRepository;
+  late FakePokemonRepositoryImpl mockPokemonRepository;
 
   setUp(() {
-    mockPokemonRepository = MockPokemonRepositoryImpl();
+    mockPokemonRepository = MockFakePokemonRepositoryImpl();
     getMorePokemonsUseCase = GetMorePokemonsUseCase(mockPokemonRepository);
   });
 
-  final tPokemons = [
+  const tPokemons = [
     Pokemon(
       name: 'name',
       id: 1,
       height: 0,
       weight: 10,
-      types: const ['grass'],
+      types: ['grass'],
       stats: AllStats(
         attack: BaseStatType(name: 'attack', value: 2),
         defense: BaseStatType(name: 'defense', value: 2),
@@ -43,7 +43,7 @@ void main() {
       id: 1,
       height: 0,
       weight: 10,
-      types: const ['grass'],
+      types: ['grass'],
       stats: AllStats(
         attack: BaseStatType(name: 'attack', value: 2),
         defense: BaseStatType(name: 'defense', value: 2),
@@ -60,17 +60,17 @@ void main() {
     'should get more Pokemons from the api',
     () async {
       // arrange
-      when(mockPokemonRepository.getMorePokeMans(offset: 10))
-          .thenAnswer((_) async => Right(tPokemons));
+      when(mockPokemonRepository.getMorePokeMons(offset: 10))
+          .thenAnswer((_) async => const Right(tPokemons));
       const params = LoadMorePokemonsParams(offset: 10);
 
       // act
       final result = await getMorePokemonsUseCase(params);
 
       // assert
-      expect(result, Right(tPokemons));
+      expect(result,const Right(tPokemons));
 
-      verify(mockPokemonRepository.getMorePokeMans(offset: 10));
+      verify(mockPokemonRepository.getMorePokeMons(offset: 10));
 
       verifyNoMoreInteractions(mockPokemonRepository);
     },

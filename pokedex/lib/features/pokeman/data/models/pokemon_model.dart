@@ -9,7 +9,7 @@ class PokemonModel extends Pokemon {
   final int height;
   final int weight;
   final List<String> types;
-  final AllStats stats;
+  final AllStatsModel stats;
   final String imageUrl;
   final bool isFavorite;
   const PokemonModel({
@@ -58,5 +58,55 @@ class PokemonModel extends Pokemon {
     return rawData['other']?['official-artwork']?['front_default']
             ?.toString() ??
         '';
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'height': height,
+      'id': id,
+      'name': name,
+      'sprites': {
+        "official-artwork": {"front_default": imageUrl}
+      },
+      'stats': stats.toJson(),
+      'weight': weight,
+      "types": getTypesJson(),
+    };
+  }
+
+  List<Map<String, dynamic>> getTypesJson() {
+    List<Map<String, dynamic>> returnedData = [];
+
+    for (var type in types) {
+      returnedData.add({
+        "type": {
+          "name": type,
+        }
+      });
+    }
+
+    return returnedData;
+  }
+
+  PokemonModel copyWith({
+    String? name,
+    int? id,
+    int? height,
+    int? weight,
+    List<String>? types,
+    AllStatsModel? stats,
+    String? imageUrl,
+    bool? isFavorite,
+  }) {
+    return PokemonModel(
+      name: name ?? this.name,
+      id: id ?? this.id,
+      height: height ?? this.height,
+      weight: weight ?? this.weight,
+      types: types ?? this.types,
+      stats: stats ?? this.stats,
+      imageUrl: imageUrl ?? this.imageUrl,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
   }
 }

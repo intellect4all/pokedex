@@ -121,4 +121,79 @@ void main() {
       },
     );
   });
+
+  group('toJson', () {
+    test(
+      'should return a valid JSON valid containing proper data',
+      () async {
+        final tJSONMap = {
+          "height": 7,
+          "id": 1,
+          "name": "bulbasaur",
+          "sprites": {
+            "official-artwork": {
+              "front_default":
+                  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+            }
+          },
+          "stats": [
+            {
+              "base_stat": 45,
+              "stat": {
+                "name": "hp",
+              }
+            },
+            {
+              "base_stat": 49,
+              "stat": {
+                "name": "attack",
+              }
+            },
+            {
+              "base_stat": 49,
+              "stat": {
+                "name": "defense",
+              }
+            },
+            {
+              "base_stat": 65,
+              "stat": {
+                "name": "special-attack",
+              }
+            },
+            {
+              "base_stat": 65,
+              "stat": {
+                "name": "special-defense",
+              }
+            },
+            {
+              "base_stat": 45,
+              "stat": {
+                "name": "speed",
+              }
+            }
+          ],
+          "types": [
+            {
+              "type": {
+                "name": "grass",
+              }
+            },
+            {
+              "type": {
+                "name": "poison",
+              }
+            }
+          ],
+          "weight": 69
+        };
+        // act
+        final result = tPokemonModel.toJson();
+
+        // assert
+        expect(result, tJSONMap);
+      },
+    );
+  });
 }

@@ -9,27 +9,27 @@ import 'package:pokedex/features/pokeman/domain/entities/base_stat_type.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
 import 'package:pokedex/features/pokeman/domain/usecases/get_initial_pokemons_usecase.dart';
 
-import '../../../data/repository/pokeman_repo_impl.dart';
+import '../../../data/repository/fake_pokemon_repo_impl.dart';
 import 'get_initial_pokemons_usecase_test.mocks.dart';
 
-@GenerateMocks([PokemonRepositoryImpl])
+@GenerateMocks([FakePokemonRepositoryImpl])
 void main() {
   late GetInitialPokemonsUseCase getInitialPokemonsUseCase;
-  late PokemonRepositoryImpl mockPokemonRepository;
+  late FakePokemonRepositoryImpl mockPokemonRepository;
 
   setUp(() {
-    mockPokemonRepository = MockPokemonRepositoryImpl();
+    mockPokemonRepository = MockFakePokemonRepositoryImpl();
     getInitialPokemonsUseCase =
         GetInitialPokemonsUseCase(mockPokemonRepository);
   });
 
-  final tPokemons = [
+  const tPokemons = [
     Pokemon(
       name: 'name',
       id: 1,
       height: 0,
       weight: 10,
-      types: const ['grass'],
+      types: ['grass'],
       stats: AllStats(
         attack: BaseStatType(name: 'attack', value: 2),
         defense: BaseStatType(name: 'defense', value: 2),
@@ -43,10 +43,10 @@ void main() {
     ),
     Pokemon(
       name: 'name',
-      id: 1,
+      id: 2,
       height: 0,
       weight: 10,
-      types: const ['grass'],
+      types: ['grass'],
       stats: AllStats(
         attack: BaseStatType(name: 'attack', value: 2),
         defense: BaseStatType(name: 'defense', value: 2),
@@ -63,7 +63,7 @@ void main() {
     'should get initial Pokemons from the api',
     () async {
       // arrange
-      when(mockPokemonRepository.getInitialPokeMans())
+      when(mockPokemonRepository.getInitialPokeMons())
           .thenAnswer((_) async => Right(tPokemons));
 
       // act
@@ -72,7 +72,7 @@ void main() {
 
       expect(result, Right(tPokemons));
 
-      verify(mockPokemonRepository.getInitialPokeMans());
+      verify(mockPokemonRepository.getInitialPokeMons());
 
       verifyNoMoreInteractions(mockPokemonRepository);
     },

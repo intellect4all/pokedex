@@ -8,27 +8,27 @@ import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
 import 'package:pokedex/features/pokeman/domain/entities/success_entity.dart';
 import 'package:pokedex/features/pokeman/domain/usecases/remove_pokemon_from_favorites_local_usecase.dart';
 
-import '../../../data/repository/pokeman_repo_impl.dart';
+import '../../../data/repository/fake_pokemon_repo_impl.dart';
 import 'remove_pokemon_from_favorites_local_test.mocks.dart';
 
-@GenerateMocks([PokemonRepositoryImpl])
+@GenerateMocks([FakePokemonRepositoryImpl])
 void main() {
   late RemovePokemonFromFavoritesLocalUseCase
       removePokemonFromFavoritesLocalUseCase;
-  late MockPokemonRepositoryImpl mockPokemonRepositoryImpl;
+  late MockFakePokemonRepositoryImpl mockPokemonRepositoryImpl;
 
   setUp(() {
-    mockPokemonRepositoryImpl = MockPokemonRepositoryImpl();
+    mockPokemonRepositoryImpl = MockFakePokemonRepositoryImpl();
     removePokemonFromFavoritesLocalUseCase =
         RemovePokemonFromFavoritesLocalUseCase(mockPokemonRepositoryImpl);
   });
 
-  final tPokemon = Pokemon(
+  const tPokemon = Pokemon(
     name: 'name',
     id: 1,
     height: 0,
     weight: 10,
-    types: const ['grass'],
+    types: ['grass'],
     stats: AllStats(
       attack: BaseStatType(name: 'attack', value: 2),
       defense: BaseStatType(name: 'defense', value: 2),
@@ -52,7 +52,7 @@ void main() {
         ),
       );
 
-      final removePokemonParams =
+      const removePokemonParams =
           RemovePokemonFromFavoritesLocalParams(pokemon: tPokemon);
 
       // act

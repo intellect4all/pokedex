@@ -10,6 +10,6 @@ class GetInitialPokemonsUseCase extends UseCase<List<Pokemon>, NoParams> {
 
   @override
   Future<Either<Failure, List<Pokemon>>> call(NoParams params) async {
-    return await repository.getInitialPokeMans();
+    return await repository.getInitialPokeMons();
   }
 }

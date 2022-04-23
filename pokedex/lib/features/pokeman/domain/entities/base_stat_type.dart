@@ -8,6 +8,15 @@ class BaseStatType extends Equatable {
     required this.value,
   });
 
+  Map<String, dynamic> toMap() {
+    return {
+      'base_stat': value,
+      'stat': {
+        'name': name,
+      }
+    };
+  }
+
   @override
   List<Object> get props => [name, value];
 }

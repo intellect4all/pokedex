@@ -13,7 +13,7 @@ class GetMorePokemonsUseCase
 
   @override
   Future<Either<Failure, List<Pokemon>>> call(params) async {
-    return await repository.getMorePokeMans(offset: params.offset);
+    return await repository.getMorePokeMons(offset: params.offset);
   }
 }
 

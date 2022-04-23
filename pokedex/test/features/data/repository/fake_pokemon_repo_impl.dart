@@ -4,14 +4,14 @@ import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
 import 'package:pokedex/features/pokeman/domain/entities/success_entity.dart';
 import 'package:pokedex/features/pokeman/domain/repository/pokemon_repository.dart';
 
-class PokemonRepositoryImpl implements PokemonRepository {
+class FakePokemonRepositoryImpl implements PokemonRepository {
   @override
-  Future<Either<Failure, List<Pokemon>>> getInitialPokeMans() {
+  Future<Either<Failure, List<Pokemon>>> getInitialPokeMons() {
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, List<Pokemon>>> getMorePokeMans(
+  Future<Either<Failure, List<Pokemon>>> getMorePokeMons(
       {required int offset}) {
     throw UnimplementedError();
   }
