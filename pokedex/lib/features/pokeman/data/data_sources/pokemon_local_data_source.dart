@@ -32,21 +32,24 @@ class PokemonLocalDataSourceImpl extends PokemonLocalDataSource {
           final cachedPokemons = hiveBoxes.favouritePokemonBox.values.toList();
           return List.generate(cachedPokemons.length,
               (index) => PokemonModel.fromJson(cachedPokemons[index]));
-        } else {
-          throw CacheException();
         }
-      } else {
-        throw CacheException();
       }
+      throw CacheException();
     } catch (e) {
       throw CacheException();
     }
   }
 
   @override
-  Future<SuccessEntity> cacheFavoritePokemon(PokemonModel pokemonToCache) {
-    // TODO: implement cacheFavoritePokemon
-    throw UnimplementedError();
+  Future<SuccessEntity> cacheFavoritePokemon(
+      PokemonModel pokemonToCache) async {
+    try {
+      await hiveBoxes.favouritePokemonBox
+          .put(pokemonToCache.id, pokemonToCache.toJson());
+      return SuccessEntity();
+    } catch (e) {
+      throw CacheException();
+    }
   }
 
   @override

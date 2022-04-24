@@ -9,6 +9,7 @@ import 'package:pokedex/core/constants/keys.dart';
 import 'package:pokedex/core/errors/exceptions.dart';
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_local_data_source.dart';
 import 'package:pokedex/features/pokeman/data/models/pokemon_model.dart';
+import 'package:pokedex/features/pokeman/domain/entities/success_entity.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
 import 'pokemon_local_data_source_test.mocks.dart';
@@ -145,6 +146,50 @@ void main() {
 
         // assert
         expect(callGetCached, throwsA(isA<CacheException>()));
+      },
+    );
+  });
+
+  group('cacheFavoritePokemon ', () {
+    final List<dynamic> jsonMap = json.decode(fixture('cached_pokemons.json'));
+    final tCachedPokemons =
+        List.generate(3, (index) => PokemonModel.fromJson(jsonMap[index]));
+    final tPokemon = tCachedPokemons.first;
+
+    test(
+      'should save pokemon in the box',
+      () async {
+        // act
+        localDataSource.cacheFavoritePokemon(tPokemon);
+
+        // assert
+        final expectedJSONMap = tPokemon.toJson();
+        verify(mockFavoritePokemonBox.put(tPokemon.id, expectedJSONMap));
+      },
+    );
+    test(
+      'should return a success entity after saving to cache',
+      () async {
+        // act
+        final result = await localDataSource.cacheFavoritePokemon(tPokemon);
+
+        // assert
+        final expectedJSONMap = tPokemon.toJson();
+        verify(mockFavoritePokemonBox.put(tPokemon.id, expectedJSONMap));
+        expect(result, isA<SuccessEntity>());
+      },
+    );
+
+    test(
+      'should throw a cache exception when any error occurs',
+      () async {
+        when(mockFavoritePokemonBox.put(any, any)).thenThrow(Exception());
+        // act
+        cacheFavoritePokemon() async =>
+            await localDataSource.cacheFavoritePokemon(tPokemon);
+
+        // assert
+        expect(cacheFavoritePokemon, throwsA(isA<CacheException>()));
       },
     );
   });
