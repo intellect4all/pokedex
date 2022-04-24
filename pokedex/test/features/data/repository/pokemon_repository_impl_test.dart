@@ -113,7 +113,7 @@ void main() {
     ];
 
     setUp(() {
-      when(mockPokemonRemoteDataSource.getInitialPokeMans())
+      when(mockPokemonRemoteDataSource.getInitialPokemons())
           .thenAnswer((_) async => tPokemonModels);
       when(mockPokemonLocalDataSource.getCachedFavoritePokemons())
           .thenAnswer((_) async => []);
@@ -140,7 +140,7 @@ void main() {
         'should return remote pokemons data if there is internet connection on device',
         () async {
           // arrange
-          when(mockPokemonRemoteDataSource.getInitialPokeMans())
+          when(mockPokemonRemoteDataSource.getInitialPokemons())
               .thenAnswer((_) async => tPokemonModels);
           when(mockPokemonLocalDataSource.getCachedFavoritePokemons())
               .thenAnswer((_) async => []);
@@ -149,7 +149,7 @@ void main() {
           final result = await repository.getInitialPokeMons();
 
           // assert
-          verify(mockPokemonRemoteDataSource.getInitialPokeMans());
+          verify(mockPokemonRemoteDataSource.getInitialPokemons());
           expect(result, equals(Right(tPokemons)));
         },
       );
@@ -157,14 +157,14 @@ void main() {
         'should return a server failure when the pokemons could not be fetched',
         () async {
           // arrange
-          when(mockPokemonRemoteDataSource.getInitialPokeMans())
+          when(mockPokemonRemoteDataSource.getInitialPokemons())
               .thenThrow(ServerException());
 
           // act
           final result = await repository.getInitialPokeMons();
 
           // assert
-          verify(mockPokemonRemoteDataSource.getInitialPokeMans());
+          verify(mockPokemonRemoteDataSource.getInitialPokemons());
           expect(result, equals(Left(ServerFailure())));
         },
       );
@@ -180,7 +180,7 @@ void main() {
           final result = await repository.getInitialPokeMons();
 
           // assert
-          verify(mockPokemonRemoteDataSource.getInitialPokeMans());
+          verify(mockPokemonRemoteDataSource.getInitialPokemons());
           verify(mockPokemonLocalDataSource.getCachedFavoritePokemons());
         },
       );
@@ -191,7 +191,7 @@ void main() {
           // arrange
           when(mockPokemonLocalDataSource.getCachedFavoritePokemons())
               .thenAnswer((_) async => tCachedFavoritePokemons);
-          when(mockPokemonRemoteDataSource.getInitialPokeMans())
+          when(mockPokemonRemoteDataSource.getInitialPokemons())
               .thenAnswer((_) async => tPokemonModels);
 
           // act
@@ -239,7 +239,7 @@ void main() {
             ),
           ];
 
-          verify(mockPokemonRemoteDataSource.getInitialPokeMans());
+          verify(mockPokemonRemoteDataSource.getInitialPokemons());
           verify(mockPokemonLocalDataSource.getCachedFavoritePokemons());
           expect(result.fold((l) => null, (r) => r.first),
               equals(expectedResponse.first));
@@ -253,14 +253,14 @@ void main() {
 
           when(mockPokemonLocalDataSource.getCachedFavoritePokemons())
               .thenAnswer((_) async => tCachedPokemonNotInRemote);
-          when(mockPokemonRemoteDataSource.getInitialPokeMans())
+          when(mockPokemonRemoteDataSource.getInitialPokemons())
               .thenAnswer((_) async => tPokemonModels);
 
           // act
           final result = await repository.getInitialPokeMons();
 
           // assert
-          verify(mockPokemonRemoteDataSource.getInitialPokeMans());
+          verify(mockPokemonRemoteDataSource.getInitialPokemons());
           verify(mockPokemonLocalDataSource.getCachedFavoritePokemons());
           expect(result, equals(Right(tPokemons)));
         },
@@ -273,14 +273,14 @@ void main() {
           when(mockPokemonLocalDataSource.getCachedFavoritePokemons())
               .thenAnswer((_) async =>
                   [...tCachedFavoritePokemons, ...tCachedPokemonNotInRemote]);
-          when(mockPokemonRemoteDataSource.getInitialPokeMans())
+          when(mockPokemonRemoteDataSource.getInitialPokemons())
               .thenAnswer((_) async => tPokemonModels);
 
           // act
           final result = await repository.getInitialPokeMons();
 
           // assert
-          verify(mockPokemonRemoteDataSource.getInitialPokeMans());
+          verify(mockPokemonRemoteDataSource.getInitialPokemons());
           verify(mockPokemonLocalDataSource.getCachedFavoritePokemons());
 
           final expected = result.fold((l) => null, (pokemons) => pokemons);
@@ -297,14 +297,14 @@ void main() {
 
           when(mockPokemonLocalDataSource.getCachedFavoritePokemons())
               .thenThrow(CacheException());
-          when(mockPokemonRemoteDataSource.getInitialPokeMans())
+          when(mockPokemonRemoteDataSource.getInitialPokemons())
               .thenAnswer((_) async => tPokemonModels);
 
           // act
           final result = await repository.getInitialPokeMons();
 
           // assert
-          verify(mockPokemonRemoteDataSource.getInitialPokeMans());
+          verify(mockPokemonRemoteDataSource.getInitialPokemons());
           verify(mockPokemonLocalDataSource.getCachedFavoritePokemons());
           expect(result, equals(Right(tPokemons)));
         },
@@ -319,7 +319,7 @@ void main() {
         'should not call remote data source when device is offline',
         () async {
           // arrange
-          when(mockPokemonRemoteDataSource.getInitialPokeMans())
+          when(mockPokemonRemoteDataSource.getInitialPokemons())
               .thenThrow(ServerException());
 
           // act
@@ -468,14 +468,14 @@ void main() {
         'should never call getInitialPokemons()',
         () async {
           //arrange
-          when(mockPokemonRemoteDataSource.getInitialPokeMans())
+          when(mockPokemonRemoteDataSource.getInitialPokemons())
               .thenAnswer((_) async => tPokemonModels);
 
           // act
           await repository.getMorePokemons(offset: tOffset);
 
           // assert
-          verifyNever(mockPokemonRemoteDataSource.getInitialPokeMans());
+          verifyNever(mockPokemonRemoteDataSource.getInitialPokemons());
         },
       );
       test(
@@ -665,7 +665,7 @@ void main() {
         'should not call remote data source when device is offline',
         () async {
           // arrange
-          when(mockPokemonRemoteDataSource.getInitialPokeMans())
+          when(mockPokemonRemoteDataSource.getInitialPokemons())
               .thenThrow(ServerException());
 
           // act

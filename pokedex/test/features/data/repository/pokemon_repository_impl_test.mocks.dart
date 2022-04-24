@@ -36,8 +36,8 @@ class MockPokemonRemoteDataSource extends _i1.Mock
   }
 
   @override
-  _i4.Future<List<_i5.PokemonModel>> getInitialPokeMans() =>
-      (super.noSuchMethod(Invocation.method(#getInitialPokeMans, []),
+  _i4.Future<List<_i5.PokemonModel>> getInitialPokemons() =>
+      (super.noSuchMethod(Invocation.method(#getInitialPokemons, []),
               returnValue:
                   Future<List<_i5.PokemonModel>>.value(<_i5.PokemonModel>[]))
           as _i4.Future<List<_i5.PokemonModel>>);

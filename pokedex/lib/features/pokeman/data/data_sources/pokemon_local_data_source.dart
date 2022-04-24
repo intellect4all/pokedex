@@ -1,6 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:pokedex/core/constants/keys.dart';
 import 'package:pokedex/core/errors/exceptions.dart';
 import 'package:pokedex/features/pokeman/data/models/pokemon_model.dart';
 import 'package:pokedex/features/pokeman/domain/entities/success_entity.dart';
@@ -24,12 +23,14 @@ class PokemonLocalDataSourceImpl extends PokemonLocalDataSource {
   final HiveBoxes hiveBoxes;
   PokemonLocalDataSourceImpl({required this.hiveBoxes});
 
+  Box get favoritePokemonsBox => hiveBoxes.favouritePokemonBox;
+
   @override
   Future<List<PokemonModel>> getCachedFavoritePokemons() async {
     try {
-      if (hiveBoxes.favouritePokemonBox.isOpen) {
-        if (hiveBoxes.favouritePokemonBox.isNotEmpty) {
-          final cachedPokemons = hiveBoxes.favouritePokemonBox.values.toList();
+      if (favoritePokemonsBox.isOpen) {
+        if (favoritePokemonsBox.isNotEmpty) {
+          final cachedPokemons = favoritePokemonsBox.values.toList();
           return List.generate(cachedPokemons.length,
               (index) => PokemonModel.fromJson(cachedPokemons[index]));
         }
@@ -44,8 +45,7 @@ class PokemonLocalDataSourceImpl extends PokemonLocalDataSource {
   Future<SuccessEntity> cacheFavoritePokemon(
       PokemonModel pokemonToCache) async {
     try {
-      await hiveBoxes.favouritePokemonBox
-          .put(pokemonToCache.id, pokemonToCache.toJson());
+      await favoritePokemonsBox.put(pokemonToCache.id, pokemonToCache.toJson());
       return SuccessEntity();
     } catch (e) {
       throw CacheException();
@@ -56,7 +56,7 @@ class PokemonLocalDataSourceImpl extends PokemonLocalDataSource {
   Future<SuccessEntity> removeFavoritePokemon(
       PokemonModel pokemonToBeRemoved) async {
     try {
-      await hiveBoxes.favouritePokemonBox.delete(pokemonToBeRemoved.id);
+      await favoritePokemonsBox.delete(pokemonToBeRemoved.id);
       return SuccessEntity();
     } catch (e) {
       throw CacheException();

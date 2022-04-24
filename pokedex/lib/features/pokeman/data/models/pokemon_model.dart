@@ -1,4 +1,3 @@
-import 'package:pokedex/features/pokeman/domain/entities/all_stats.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
 
 import 'all_stats_model.dart';

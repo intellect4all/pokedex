@@ -28,7 +28,7 @@ class PokemonRepositoryImpl extends PokemonRepository {
     List<PokemonModel> cachedFavoritePokemons = [];
     if (await networkInfo.isConnected) {
       try {
-        remotePokemons = await remoteDataSource.getInitialPokeMans();
+        remotePokemons = await remoteDataSource.getInitialPokemons();
         pokemons = remotePokemons;
         try {
           cachedFavoritePokemons =
