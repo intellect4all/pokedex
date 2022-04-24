@@ -53,8 +53,13 @@ class PokemonLocalDataSourceImpl extends PokemonLocalDataSource {
   }
 
   @override
-  Future<SuccessEntity> removeFavoritePokemon(PokemonModel pokemonToBeRemoved) {
-    // TODO: implement removeFavoritePokemon
-    throw UnimplementedError();
+  Future<SuccessEntity> removeFavoritePokemon(
+      PokemonModel pokemonToBeRemoved) async {
+    try {
+      await hiveBoxes.favouritePokemonBox.delete(pokemonToBeRemoved.id);
+      return SuccessEntity();
+    } catch (e) {
+      throw CacheException();
+    }
   }
 }

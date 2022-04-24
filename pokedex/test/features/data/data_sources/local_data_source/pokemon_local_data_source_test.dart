@@ -193,4 +193,46 @@ void main() {
       },
     );
   });
+
+  group('removeFavoritePokemon', () {
+    final List<dynamic> jsonMap = json.decode(fixture('cached_pokemons.json'));
+    final tCachedPokemons =
+        List.generate(3, (index) => PokemonModel.fromJson(jsonMap[index]));
+    final tPokemon = tCachedPokemons.first;
+
+    test(
+      'should delete pokemon from the box',
+      () async {
+        // act
+        localDataSource.removeFavoritePokemon(tPokemon);
+
+        // assert
+        verify(mockFavoritePokemonBox.delete(tPokemon.id));
+      },
+    );
+    test(
+      'should return a success entity after deleting pokemon',
+      () async {
+        // act
+        final result = await localDataSource.removeFavoritePokemon(tPokemon);
+
+        // assert
+        verify(mockFavoritePokemonBox.delete(tPokemon.id));
+        expect(result, isA<SuccessEntity>());
+      },
+    );
+
+    test(
+      'should throw a cache exception when any error occurs',
+      () async {
+        when(mockFavoritePokemonBox.delete(any)).thenThrow(Exception());
+        // act
+        removeFavoritePokemon() async =>
+            await localDataSource.removeFavoritePokemon(tPokemon);
+
+        // assert
+        expect(removeFavoritePokemon, throwsA(isA<CacheException>()));
+      },
+    );
+  });
 }
