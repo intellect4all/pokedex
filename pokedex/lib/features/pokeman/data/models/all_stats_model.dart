@@ -74,4 +74,15 @@ class AllStatsModel extends AllStats {
     list.add(modelSpeed.toMap());
     return list;
   }
+
+  factory AllStatsModel.fromEntity(AllStats stats) {
+    return AllStatsModel(
+      modelHp: stats.hp,
+      modelAttack: stats.attack,
+      modelDefense: stats.defense,
+      modelSpecialAttack: stats.specialAttack,
+      modelSpecialDefense: stats.specialDefense,
+      modelSpeed: stats.speed,
+    );
+  }
 }

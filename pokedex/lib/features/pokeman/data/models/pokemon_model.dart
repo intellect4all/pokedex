@@ -32,7 +32,7 @@ class PokemonModel extends Pokemon {
           types: types,
         );
 
-  factory PokemonModel.fromJson(Map<String, dynamic> json) {
+  factory PokemonModel.fromJson(dynamic json) {
     return PokemonModel(
       name: json['name'],
       id: json['id'],
@@ -107,6 +107,19 @@ class PokemonModel extends Pokemon {
       stats: stats ?? this.stats,
       imageUrl: imageUrl ?? this.imageUrl,
       isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
+
+  factory PokemonModel.fromPokemon(Pokemon pokemon) {
+    return PokemonModel(
+      name: pokemon.name,
+      id: pokemon.id,
+      height: pokemon.height,
+      weight: pokemon.weight,
+      types: pokemon.types,
+      stats: AllStatsModel.fromEntity(pokemon.stats),
+      imageUrl: pokemon.imageUrl,
+      isFavorite: pokemon.isFavorite,
     );
   }
 }

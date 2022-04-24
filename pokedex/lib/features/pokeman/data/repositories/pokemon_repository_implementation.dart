@@ -5,8 +5,6 @@ import 'package:pokedex/core/utils/network_info/network_info.dart';
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_local_data_source.dart';
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_remote_data_source.dart';
 import 'package:pokedex/features/pokeman/data/models/pokemon_model.dart';
-import 'package:pokedex/features/pokeman/domain/entities/all_stats.dart';
-import 'package:pokedex/features/pokeman/domain/entities/base_stat_type.dart';
 import 'package:pokedex/features/pokeman/domain/entities/success_entity.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
 import 'package:pokedex/core/errors/failure.dart';
@@ -96,15 +94,25 @@ class PokemonRepositoryImpl extends PokemonRepository {
 
   @override
   Future<Either<Failure, SuccessEntity>> addPokemonToFavoritesLocal(
-      {required Pokemon pokemon}) {
-    // TODO: implement addPokemonToFavoritesLocal
-    throw UnimplementedError();
+      {required Pokemon pokemon}) async {
+    try {
+      final result = await localDataSource
+          .cacheFavoritePokemon(PokemonModel.fromPokemon(pokemon));
+      return Right(result);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
   }
 
   @override
   Future<Either<Failure, SuccessEntity>> removePokemonFromFavoritesLocal(
-      {required Pokemon pokemon}) {
-    // TODO: implement removePokemonFromFavoritesLocal
-    throw UnimplementedError();
+      {required Pokemon pokemon}) async {
+    try {
+      final result = await localDataSource
+          .removeFavoritePokemon(PokemonModel.fromPokemon(pokemon));
+      return Right(result);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
   }
 }

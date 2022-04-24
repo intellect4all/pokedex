@@ -8,7 +8,7 @@ import 'package:pokedex/features/pokeman/domain/entities/base_stat_type.dart';
 import '../../../fixtures/fixture_reader.dart';
 
 void main() {
-  const tAllStats = AllStatsModel(
+  const tAllStatsModel = AllStatsModel(
     modelAttack: BaseStatType(name: 'attack', value: 49),
     modelDefense: BaseStatType(name: 'defense', value: 49),
     modelSpecialAttack: BaseStatType(name: 'special-attack', value: 65),
@@ -16,10 +16,11 @@ void main() {
     modelSpeed: BaseStatType(name: 'speed', value: 45),
     modelHp: BaseStatType(name: 'hp', value: 45),
   );
+
   test(
     'should test that AllStatsModel is a subclass of AllStats',
     () async {
-      expect(tAllStats, isA<AllStats>());
+      expect(tAllStatsModel, isA<AllStats>());
     },
   );
   group('fromJson', () {
@@ -34,7 +35,7 @@ void main() {
         final result = AllStatsModel.fromJson(jsonMap['stats']);
 
         // assert
-        expect(result, tAllStats);
+        expect(result, tAllStatsModel);
       },
     );
   });
@@ -44,7 +45,7 @@ void main() {
       'should return an JsonMap containing valid data',
       () async {
         // act
-        final result = tAllStats.toJson();
+        final result = tAllStatsModel.toJson();
 
         final expectedList = [
           {
@@ -87,6 +88,27 @@ void main() {
 
         // assert
         expect(result, expectedList);
+      },
+    );
+  });
+
+  group('toEntity', () {
+    const tAllStats = AllStats(
+      attack: BaseStatType(name: 'attack', value: 49),
+      defense: BaseStatType(name: 'defense', value: 49),
+      specialAttack: BaseStatType(name: 'special-attack', value: 65),
+      specialDefense: BaseStatType(name: 'special-defense', value: 65),
+      speed: BaseStatType(name: 'speed', value: 45),
+      hp: BaseStatType(name: 'hp', value: 45),
+    );
+    test(
+      'should return a AllStatModel from AllStats entity',
+      () async {
+        // act
+        final result = AllStatsModel.fromEntity(tAllStats);
+
+        // assert
+        expect(result, tAllStatsModel);
       },
     );
   });

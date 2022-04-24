@@ -2,23 +2,22 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:pokedex/core/errors/failure.dart';
 import 'package:pokedex/core/usecases/usecase.dart';
+import 'package:pokedex/features/pokeman/data/repositories/pokemon_repository_implementation.dart';
 import 'package:pokedex/features/pokeman/domain/entities/all_stats.dart';
 import 'package:pokedex/features/pokeman/domain/entities/base_stat_type.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
 import 'package:pokedex/features/pokeman/domain/usecases/get_initial_pokemons_usecase.dart';
 
-import '../../../data/repository/fake_pokemon_repo_impl.dart';
 import 'get_initial_pokemons_usecase_test.mocks.dart';
 
-@GenerateMocks([FakePokemonRepositoryImpl])
+@GenerateMocks([PokemonRepositoryImpl])
 void main() {
   late GetInitialPokemonsUseCase getInitialPokemonsUseCase;
-  late FakePokemonRepositoryImpl mockPokemonRepository;
+  late MockPokemonRepositoryImpl mockPokemonRepository;
 
   setUp(() {
-    mockPokemonRepository = MockFakePokemonRepositoryImpl();
+    mockPokemonRepository = MockPokemonRepositoryImpl();
     getInitialPokemonsUseCase =
         GetInitialPokemonsUseCase(mockPokemonRepository);
   });

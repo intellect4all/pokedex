@@ -196,4 +196,29 @@ void main() {
       },
     );
   });
+
+  group('fromPokemon', () {
+    test('should return a PokemonModel from a Pokemon Entity', () {
+      //act
+      final result = PokemonModel.fromPokemon(tPokemonModel);
+
+      //assert
+      expect(result, tPokemonModel);
+    });
+  });
+
+  group('copyWith', () {
+    test(
+      'should return a new copy of with updated fields',
+      () async {
+        // arrange
+
+        // act
+        final result = tPokemonModel.copyWith(name: 'new test name');
+
+        // assert
+        expect(result.name, 'new test name');
+      },
+    );
+  });
 }

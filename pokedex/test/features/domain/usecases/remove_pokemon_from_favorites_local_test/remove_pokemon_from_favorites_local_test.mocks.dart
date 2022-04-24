@@ -2,16 +2,21 @@
 // in pokedex/test/features/domain/usecases/remove_pokemon_from_favorites_local_test/remove_pokemon_from_favorites_local_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i4;
+import 'dart:async' as _i7;
 
-import 'package:dartz/dartz.dart' as _i2;
+import 'package:dartz/dartz.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:pokedex/core/errors/failure.dart' as _i5;
-import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart' as _i6;
+import 'package:pokedex/core/errors/failure.dart' as _i8;
+import 'package:pokedex/core/utils/network_info/network_info.dart' as _i2;
+import 'package:pokedex/features/pokeman/data/data_sources/pokemon_local_data_source.dart'
+    as _i3;
+import 'package:pokedex/features/pokeman/data/data_sources/pokemon_remote_data_source.dart'
+    as _i4;
+import 'package:pokedex/features/pokeman/data/repositories/pokemon_repository_implementation.dart'
+    as _i6;
+import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart' as _i9;
 import 'package:pokedex/features/pokeman/domain/entities/success_entity.dart'
-    as _i7;
-
-import '../../../data/repository/fake_pokemon_repo_impl.dart' as _i3;
+    as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -23,47 +28,70 @@ import '../../../data/repository/fake_pokemon_repo_impl.dart' as _i3;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
-class _FakeEither_0<L, R> extends _i1.Fake implements _i2.Either<L, R> {}
+class _FakeNetworkInfo_0 extends _i1.Fake implements _i2.NetworkInfo {}
 
-/// A class which mocks [FakePokemonRepositoryImpl].
+class _FakePokemonLocalDataSource_1 extends _i1.Fake
+    implements _i3.PokemonLocalDataSource {}
+
+class _FakePokemonRemoteDataSource_2 extends _i1.Fake
+    implements _i4.PokemonRemoteDataSource {}
+
+class _FakeEither_3<L, R> extends _i1.Fake implements _i5.Either<L, R> {}
+
+/// A class which mocks [PokemonRepositoryImpl].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockFakePokemonRepositoryImpl extends _i1.Mock
-    implements _i3.FakePokemonRepositoryImpl {
-  MockFakePokemonRepositoryImpl() {
+class MockPokemonRepositoryImpl extends _i1.Mock
+    implements _i6.PokemonRepositoryImpl {
+  MockPokemonRepositoryImpl() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>> getInitialPokeMons() =>
-      (super.noSuchMethod(Invocation.method(#getInitialPokeMons, []),
-          returnValue: Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>>.value(
-              _FakeEither_0<_i5.Failure, List<_i6.Pokemon>>())) as _i4
-          .Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>>);
+  _i2.NetworkInfo get networkInfo =>
+      (super.noSuchMethod(Invocation.getter(#networkInfo),
+          returnValue: _FakeNetworkInfo_0()) as _i2.NetworkInfo);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>> getMorePokemons(
+  _i3.PokemonLocalDataSource get localDataSource =>
+      (super.noSuchMethod(Invocation.getter(#localDataSource),
+              returnValue: _FakePokemonLocalDataSource_1())
+          as _i3.PokemonLocalDataSource);
+  @override
+  _i4.PokemonRemoteDataSource get remoteDataSource =>
+      (super.noSuchMethod(Invocation.getter(#remoteDataSource),
+              returnValue: _FakePokemonRemoteDataSource_2())
+          as _i4.PokemonRemoteDataSource);
+  @override
+  _i7.Future<_i5.Either<_i8.Failure, List<_i9.Pokemon>>> getInitialPokeMons() =>
+      (super.noSuchMethod(Invocation.method(#getInitialPokeMons, []),
+          returnValue: Future<_i5.Either<_i8.Failure, List<_i9.Pokemon>>>.value(
+              _FakeEither_3<_i8.Failure, List<_i9.Pokemon>>())) as _i7
+          .Future<_i5.Either<_i8.Failure, List<_i9.Pokemon>>>);
+  @override
+  _i7.Future<_i5.Either<_i8.Failure, List<_i9.Pokemon>>> getMorePokemons(
           {int? offset}) =>
       (super.noSuchMethod(
-          Invocation.method(#getMorePokeMons, [], {#offset: offset}),
-          returnValue: Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>>.value(
-              _FakeEither_0<_i5.Failure, List<_i6.Pokemon>>())) as _i4
-          .Future<_i2.Either<_i5.Failure, List<_i6.Pokemon>>>);
+          Invocation.method(#getMorePokemons, [], {#offset: offset}),
+          returnValue: Future<_i5.Either<_i8.Failure, List<_i9.Pokemon>>>.value(
+              _FakeEither_3<_i8.Failure, List<_i9.Pokemon>>())) as _i7
+          .Future<_i5.Either<_i8.Failure, List<_i9.Pokemon>>>);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, _i7.SuccessEntity>>
-      addPokemonToFavoritesLocal({_i6.Pokemon? pokemon}) => (super.noSuchMethod(
-          Invocation.method(
-              #addPokemonToFavoritesLocal, [], {#pokemon: pokemon}),
-          returnValue: Future<_i2.Either<_i5.Failure, _i7.SuccessEntity>>.value(
-              _FakeEither_0<_i5.Failure, _i7.SuccessEntity>())) as _i4
-          .Future<_i2.Either<_i5.Failure, _i7.SuccessEntity>>);
+  _i7.Future<_i5.Either<_i8.Failure, _i10.SuccessEntity>>
+      addPokemonToFavoritesLocal({_i9.Pokemon? pokemon}) => (super.noSuchMethod(
+              Invocation.method(
+                  #addPokemonToFavoritesLocal, [], {#pokemon: pokemon}),
+              returnValue:
+                  Future<_i5.Either<_i8.Failure, _i10.SuccessEntity>>.value(
+                      _FakeEither_3<_i8.Failure, _i10.SuccessEntity>()))
+          as _i7.Future<_i5.Either<_i8.Failure, _i10.SuccessEntity>>);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, _i7.SuccessEntity>>
-      removePokemonFromFavoritesLocal({_i6.Pokemon? pokemon}) => (super
-          .noSuchMethod(
+  _i7.Future<_i5.Either<_i8.Failure, _i10.SuccessEntity>>
+      removePokemonFromFavoritesLocal({_i9.Pokemon? pokemon}) =>
+          (super.noSuchMethod(
               Invocation.method(
                   #removePokemonFromFavoritesLocal, [], {#pokemon: pokemon}),
               returnValue:
-                  Future<_i2.Either<_i5.Failure, _i7.SuccessEntity>>.value(
-                      _FakeEither_0<_i5.Failure, _i7.SuccessEntity>())) as _i4
-          .Future<_i2.Either<_i5.Failure, _i7.SuccessEntity>>);
+                  Future<_i5.Either<_i8.Failure, _i10.SuccessEntity>>.value(
+                      _FakeEither_3<_i8.Failure, _i10.SuccessEntity>())) as _i7
+              .Future<_i5.Either<_i8.Failure, _i10.SuccessEntity>>);
 }

@@ -2,23 +2,23 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:pokedex/features/pokeman/data/repositories/pokemon_repository_implementation.dart';
 import 'package:pokedex/features/pokeman/domain/entities/all_stats.dart';
 import 'package:pokedex/features/pokeman/domain/entities/base_stat_type.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
 import 'package:pokedex/features/pokeman/domain/entities/success_entity.dart';
 import 'package:pokedex/features/pokeman/domain/usecases/remove_pokemon_from_favorites_local_usecase.dart';
 
-import '../../../data/repository/fake_pokemon_repo_impl.dart';
 import 'remove_pokemon_from_favorites_local_test.mocks.dart';
 
-@GenerateMocks([FakePokemonRepositoryImpl])
+@GenerateMocks([PokemonRepositoryImpl])
 void main() {
   late RemovePokemonFromFavoritesLocalUseCase
       removePokemonFromFavoritesLocalUseCase;
-  late MockFakePokemonRepositoryImpl mockPokemonRepositoryImpl;
+  late MockPokemonRepositoryImpl mockPokemonRepositoryImpl;
 
   setUp(() {
-    mockPokemonRepositoryImpl = MockFakePokemonRepositoryImpl();
+    mockPokemonRepositoryImpl = MockPokemonRepositoryImpl();
     removePokemonFromFavoritesLocalUseCase =
         RemovePokemonFromFavoritesLocalUseCase(mockPokemonRepositoryImpl);
   });
@@ -47,8 +47,8 @@ void main() {
       when(mockPokemonRepositoryImpl.removePokemonFromFavoritesLocal(
               pokemon: tPokemon))
           .thenAnswer(
-        (_) async => const Right(
-          SuccessEntity(message: 'successfully removed'),
+        (_) async => Right(
+          SuccessEntity(),
         ),
       );
 
@@ -60,8 +60,7 @@ void main() {
           await removePokemonFromFavoritesLocalUseCase(removePokemonParams);
 
       // assert
-      expect(
-          result, const Right(SuccessEntity(message: 'successfully removed')));
+      expect(result, Right(SuccessEntity()));
 
       verify(mockPokemonRepositoryImpl.removePokemonFromFavoritesLocal(
           pokemon: tPokemon));

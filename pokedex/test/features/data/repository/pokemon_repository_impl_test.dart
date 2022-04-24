@@ -4,29 +4,30 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pokedex/core/errors/exceptions.dart';
 import 'package:pokedex/core/errors/failure.dart';
+import 'package:pokedex/core/utils/network_info/network_info.dart';
+import 'package:pokedex/features/pokeman/data/data_sources/pokemon_local_data_source.dart';
+import 'package:pokedex/features/pokeman/data/data_sources/pokemon_remote_data_source.dart';
 import 'package:pokedex/features/pokeman/data/models/all_stats_model.dart';
 import 'package:pokedex/features/pokeman/data/models/pokemon_model.dart';
 import 'package:pokedex/features/pokeman/data/repositories/pokemon_repository_implementation.dart';
+import 'package:pokedex/features/pokeman/domain/entities/all_stats.dart';
 import 'package:pokedex/features/pokeman/domain/entities/base_stat_type.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
+import 'package:pokedex/features/pokeman/domain/entities/success_entity.dart';
 
-import '../../../core/utils/network_info/fake_network_info.dart';
-import '../data_sources/fake_pokemon_local_data_source.dart';
-import '../data_sources/fake_pokemon_remote_data_source.dart';
 import 'pokemon_repository_impl_test.mocks.dart';
 
-@GenerateMocks(
-    [FakePokemonRemoteDataSource, FakePokemonLocalDataSource, FakeNetworkInfo])
+@GenerateMocks([PokemonRemoteDataSource, PokemonLocalDataSource, NetworkInfo])
 void main() {
-  late MockFakeNetworkInfo mockNetworkInfo;
-  late MockFakePokemonLocalDataSource mockPokemonLocalDataSource;
-  late MockFakePokemonRemoteDataSource mockPokemonRemoteDataSource;
+  late MockNetworkInfo mockNetworkInfo;
+  late MockPokemonLocalDataSource mockPokemonLocalDataSource;
+  late MockPokemonRemoteDataSource mockPokemonRemoteDataSource;
   late PokemonRepositoryImpl repository;
 
   setUp(() {
-    mockNetworkInfo = MockFakeNetworkInfo();
-    mockPokemonLocalDataSource = MockFakePokemonLocalDataSource();
-    mockPokemonRemoteDataSource = MockFakePokemonRemoteDataSource();
+    mockNetworkInfo = MockNetworkInfo();
+    mockPokemonLocalDataSource = MockPokemonLocalDataSource();
+    mockPokemonRemoteDataSource = MockPokemonRemoteDataSource();
     repository = PokemonRepositoryImpl(
       remoteDataSource: mockPokemonRemoteDataSource,
       localDataSource: mockPokemonLocalDataSource,
@@ -698,9 +699,159 @@ void main() {
           final result = await repository.getInitialPokeMons();
 
           // assert
+          verifyZeroInteractions(mockPokemonRemoteDataSource);
+          verifyZeroInteractions(mockPokemonLocalDataSource);
           expect(result, Left(DeviceOfflineFailure()));
         },
       );
     });
+  });
+
+  group('addPokemonToFavoritesLocal', () {
+    const tPokemon = Pokemon(
+      name: 'name',
+      id: 1,
+      height: 0,
+      weight: 10,
+      types: ['grass'],
+      stats: AllStats(
+        attack: BaseStatType(name: 'attack', value: 2),
+        defense: BaseStatType(name: 'defense', value: 2),
+        specialAttack: BaseStatType(name: 'special-attack', value: 2),
+        specialDefense: BaseStatType(name: 'special-defense', value: 2),
+        speed: BaseStatType(name: 'speed', value: 2),
+        hp: BaseStatType(name: 'hp', value: 2),
+      ),
+      imageUrl: 'imageUrl',
+      isFavorite: false,
+    );
+    test(
+      'should add pokemon to cache',
+      () async {
+        // arrange
+        when(mockPokemonLocalDataSource.cacheFavoritePokemon(any))
+            .thenAnswer((_) async => SuccessEntity());
+
+        // act
+        await repository.addPokemonToFavoritesLocal(pokemon: tPokemon);
+
+        // assert
+        verifyZeroInteractions(mockPokemonRemoteDataSource);
+        verify(mockPokemonLocalDataSource
+            .cacheFavoritePokemon(PokemonModel.fromPokemon(tPokemon)));
+      },
+    );
+
+    test(
+      'should return Success entity when caching is successful',
+      () async {
+        // arrange
+        when(mockPokemonLocalDataSource.cacheFavoritePokemon(any))
+            .thenAnswer((_) async => SuccessEntity());
+
+        // act
+        final result =
+            await repository.addPokemonToFavoritesLocal(pokemon: tPokemon);
+
+        // assert
+        verifyZeroInteractions(mockPokemonRemoteDataSource);
+        verify(mockPokemonLocalDataSource
+            .cacheFavoritePokemon(PokemonModel.fromPokemon(tPokemon)));
+        expect(result, Right(SuccessEntity()));
+      },
+    );
+
+    test(
+      'should return a CacheFailure if any error occurs while caching',
+      () async {
+        // arrange
+        when(mockPokemonLocalDataSource.cacheFavoritePokemon(any))
+            .thenThrow(CacheException());
+
+        // act
+        final result =
+            await repository.addPokemonToFavoritesLocal(pokemon: tPokemon);
+
+        // assert
+        verifyZeroInteractions(mockPokemonRemoteDataSource);
+        verify(mockPokemonLocalDataSource
+            .cacheFavoritePokemon(PokemonModel.fromPokemon(tPokemon)));
+        expect(result, Left(CacheFailure()));
+      },
+    );
+  });
+
+  group('removePokemonFromFavoritesLocal', () {
+    const tPokemon = Pokemon(
+      name: 'name',
+      id: 1,
+      height: 0,
+      weight: 10,
+      types: ['grass'],
+      stats: AllStats(
+        attack: BaseStatType(name: 'attack', value: 2),
+        defense: BaseStatType(name: 'defense', value: 2),
+        specialAttack: BaseStatType(name: 'special-attack', value: 2),
+        specialDefense: BaseStatType(name: 'special-defense', value: 2),
+        speed: BaseStatType(name: 'speed', value: 2),
+        hp: BaseStatType(name: 'hp', value: 2),
+      ),
+      imageUrl: 'imageUrl',
+      isFavorite: false,
+    );
+    test(
+      'should remove the pokemon from cache',
+      () async {
+        // arrange
+        when(mockPokemonLocalDataSource.removeFavoritePokemon(any))
+            .thenAnswer((_) async => SuccessEntity());
+
+        // act
+        await repository.removePokemonFromFavoritesLocal(pokemon: tPokemon);
+
+        // assert
+        verifyZeroInteractions(mockPokemonRemoteDataSource);
+        verify(mockPokemonLocalDataSource
+            .removeFavoritePokemon(PokemonModel.fromPokemon(tPokemon)));
+      },
+    );
+
+    test(
+      'should return a SuccessEntity when pokemon has been removed',
+      () async {
+        // arrange
+        when(mockPokemonLocalDataSource.removeFavoritePokemon(any))
+            .thenAnswer((_) async => SuccessEntity());
+
+        // act
+        final result =
+            await repository.removePokemonFromFavoritesLocal(pokemon: tPokemon);
+
+        // assert
+        verifyZeroInteractions(mockPokemonRemoteDataSource);
+        verify(mockPokemonLocalDataSource
+            .removeFavoritePokemon(PokemonModel.fromPokemon(tPokemon)));
+        expect(result, Right(SuccessEntity()));
+      },
+    );
+
+    test(
+      'should return a CacheFailure when any error occurs',
+      () async {
+        // arrange
+        when(mockPokemonLocalDataSource.removeFavoritePokemon(any))
+            .thenThrow(CacheException());
+
+        // act
+        final result =
+            await repository.removePokemonFromFavoritesLocal(pokemon: tPokemon);
+
+        // assert
+        verifyZeroInteractions(mockPokemonRemoteDataSource);
+        verify(mockPokemonLocalDataSource
+            .removeFavoritePokemon(PokemonModel.fromPokemon(tPokemon)));
+        expect(result, Left(CacheFailure()));
+      },
+    );
   });
 }

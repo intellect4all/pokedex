@@ -64,7 +64,7 @@ void main() {
     );
 
     test(
-      'should test that getAveragePower returns  when all stats are 2',
+      'should test that getAveragePower returns 2.0  when all stats are 2',
       () async {
         //Arrange
         const tPokemon = Pokemon(
