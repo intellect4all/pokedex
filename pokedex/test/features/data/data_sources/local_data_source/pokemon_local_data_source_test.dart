@@ -33,10 +33,11 @@ void main() {
       'should check if the cached pokemon box is open',
       () async {
         // arrange
-        when(mockFavoritePokemonBox.isOpen).thenReturn(false);
-
+        when(mockFavoritePokemonBox.isOpen).thenReturn(true);
+        when(mockFavoritePokemonBox.values).thenReturn(jsonMap);
+        when(mockFavoritePokemonBox.isNotEmpty).thenReturn(true);
         // act
-        localDataSource.getCachedFavoritePokemons();
+        await localDataSource.getCachedFavoritePokemons();
 
         // assert
         verify(mockFavoritePokemonBox.isOpen);
@@ -67,6 +68,7 @@ void main() {
         // arrange
         when(mockFavoritePokemonBox.values).thenReturn(jsonMap);
         when(mockFavoritePokemonBox.isOpen).thenReturn(true);
+        when(mockFavoritePokemonBox.isNotEmpty).thenReturn(true);
 
         // act
         await localDataSource.getCachedFavoritePokemons();

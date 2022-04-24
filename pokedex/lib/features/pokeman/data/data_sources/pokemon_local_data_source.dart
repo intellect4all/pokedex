@@ -32,9 +32,12 @@ class PokemonLocalDataSourceImpl extends PokemonLocalDataSource {
           final cachedPokemons = hiveBoxes.favouritePokemonBox.values.toList();
           return List.generate(cachedPokemons.length,
               (index) => PokemonModel.fromJson(cachedPokemons[index]));
+        } else {
+          throw CacheException();
         }
+      } else {
+        throw CacheException();
       }
-      throw CacheException();
     } catch (e) {
       throw CacheException();
     }
