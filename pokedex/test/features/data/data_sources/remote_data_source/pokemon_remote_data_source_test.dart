@@ -25,10 +25,13 @@ void main() {
         client: mockHttpClient, jsonCodec: jsonCodec);
   });
   final rawPokemonsListJsonString = fixture('list_pokemons.json');
+  final rawMorePokemonsListJsonString = fixture('list_more_pokemons.json');
   final decodedReturnedPokemonsList = _getDecodedPokemonsList();
   final tPokemonMaps = _getTestPokemonJsonMaps();
   final firstPokemonJsonString = jsonEncode(tPokemonMaps[0]);
   final secondPokemonJsonString = jsonEncode(tPokemonMaps[1]);
+  final thirdPokemonJsonString = jsonEncode(tPokemonMaps[2]);
+  final fourthPokemonJsonString = jsonEncode(tPokemonMaps[3]);
 
   setUpMockHttpPokemonDetailsSuccessResponse({
     required List<dynamic> decodedReturnedPokemonsList,
@@ -68,27 +71,54 @@ void main() {
     );
   }
 
-  setUpMockJsonDecode() {
-    when(jsonCodec.decode(rawPokemonsListJsonString))
-        .thenReturn(decodedReturnedPokemonsList.getRange(0, 2).toList());
-    when(jsonCodec.decode(firstPokemonJsonString)).thenReturn(tPokemonMaps[0]);
-    when(jsonCodec.decode(secondPokemonJsonString)).thenReturn(tPokemonMaps[1]);
+  setUpMockJsonDecode({isMore = false}) {
+    if (isMore) {
+      when(jsonCodec.decode(rawMorePokemonsListJsonString))
+          .thenReturn(decodedReturnedPokemonsList.getRange(2, 4).toList());
+      when(jsonCodec.decode(thirdPokemonJsonString))
+          .thenReturn(tPokemonMaps[2]);
+      when(jsonCodec.decode(fourthPokemonJsonString))
+          .thenReturn(tPokemonMaps[3]);
+    } else {
+      when(jsonCodec.decode(rawPokemonsListJsonString))
+          .thenReturn(decodedReturnedPokemonsList.getRange(0, 2).toList());
+      when(jsonCodec.decode(firstPokemonJsonString))
+          .thenReturn(tPokemonMaps[0]);
+      when(jsonCodec.decode(secondPokemonJsonString))
+          .thenReturn(tPokemonMaps[1]);
+    }
   }
 
-  setUpMockListPokemonSuccessResponse() {
-    when(mockHttpClient.get(Uri.parse(LIST_POKEMONS_ENDPOINT),
-            headers: anyNamed('headers')))
-        .thenAnswer(
-      (_) async => http.Response(fixture('list_pokemons.json'), 200),
-    );
+  setUpMockListPokemonSuccessResponse({isMore = false}) {
+    if (isMore) {
+      when(mockHttpClient.get(Uri.parse(LIST_POKEMONS_ENDPOINT + '&offset=2'),
+              headers: anyNamed('headers')))
+          .thenAnswer(
+        (_) async => http.Response(fixture('list_more_pokemons.json'), 200),
+      );
+    } else {
+      when(mockHttpClient.get(Uri.parse(LIST_POKEMONS_ENDPOINT),
+              headers: anyNamed('headers')))
+          .thenAnswer(
+        (_) async => http.Response(fixture('list_pokemons.json'), 200),
+      );
+    }
   }
 
-  setUpMockListPokemonFailureResponse() {
-    when(mockHttpClient.get(Uri.parse(LIST_POKEMONS_ENDPOINT),
-            headers: anyNamed('headers')))
-        .thenAnswer(
-      (_) async => http.Response('Something went wrong', 404),
-    );
+  setUpMockListPokemonFailureResponse({isMore = false}) {
+    if (isMore) {
+      when(mockHttpClient.get(Uri.parse(LIST_POKEMONS_ENDPOINT + '&offset=2'),
+              headers: anyNamed('headers')))
+          .thenAnswer(
+        (_) async => http.Response('Something went wrong', 404),
+      );
+    } else {
+      when(mockHttpClient.get(Uri.parse(LIST_POKEMONS_ENDPOINT),
+              headers: anyNamed('headers')))
+          .thenAnswer(
+        (_) async => http.Response('Something went wrong', 404),
+      );
+    }
   }
 
   group('getInitialPokemons', () {
@@ -250,10 +280,182 @@ void main() {
       },
     );
   });
+
+  group('getMorePokemons', () {
+    final tMorePokemonsEndpoint = LIST_POKEMONS_ENDPOINT + '&offset=2';
+    test(
+      '''should perform a GET request on the https://pokeapi.co/api/v2/pokemon?limit=FETCH_LIMIT&offset=offset endpoint
+       and with an application/json header''',
+      () async {
+        // arrange
+        setUpMockListPokemonSuccessResponse(isMore: true);
+        setUpMockHttpPokemonDetailsSuccessResponse(
+          firstPokemonJsonString: thirdPokemonJsonString,
+          secondPokemonJsonString: fourthPokemonJsonString,
+          decodedReturnedPokemonsList:
+              decodedReturnedPokemonsList.getRange(2, 4).toList(),
+        );
+        setUpMockJsonDecode(isMore: true);
+
+        // act
+        remoteDataSource.getMorePokemons(offset: 2);
+
+        // assert
+        verify(
+          mockHttpClient.get(
+            Uri.parse(tMorePokemonsEndpoint),
+            headers: {'Content-Type': 'application/json'},
+          ),
+        );
+      },
+    );
+
+    test(
+      'should get the list of returned pokemons list when the response code is a 200 (success)',
+      () async {
+        // arrange
+        setUpMockListPokemonSuccessResponse(isMore: true);
+        setUpMockHttpPokemonDetailsSuccessResponse(
+          decodedReturnedPokemonsList:
+              decodedReturnedPokemonsList.getRange(2, 4).toList(),
+          firstPokemonJsonString: thirdPokemonJsonString,
+          secondPokemonJsonString: fourthPokemonJsonString,
+        );
+        setUpMockJsonDecode(isMore: true);
+
+        // act
+        await remoteDataSource.getMorePokemons(offset: 2);
+
+        // assert
+        verify(
+          mockHttpClient.get(
+            Uri.parse(tMorePokemonsEndpoint),
+            headers: {'Content-Type': 'application/json'},
+          ),
+        );
+
+        verify(jsonCodec.decode(rawMorePokemonsListJsonString));
+      },
+    );
+
+    test(
+      'should perform a GET request to fetch the details of each pokemon returned from [LIST_POKEMONS_ENDPOINT]',
+      () async {
+        // arrange
+        setUpMockListPokemonSuccessResponse(isMore: true);
+        setUpMockHttpPokemonDetailsSuccessResponse(
+          decodedReturnedPokemonsList:
+              decodedReturnedPokemonsList.getRange(2, 4).toList(),
+          firstPokemonJsonString: thirdPokemonJsonString,
+          secondPokemonJsonString: fourthPokemonJsonString,
+        );
+        setUpMockJsonDecode(isMore: true);
+
+        // act
+        await remoteDataSource.getMorePokemons(offset: 2);
+
+        // assert
+        verify(
+          mockHttpClient.get(
+            Uri.parse(tMorePokemonsEndpoint),
+            headers: {'Content-Type': 'application/json'},
+          ),
+        );
+
+        verify(
+          mockHttpClient.get(
+            Uri.parse(decodedReturnedPokemonsList[2]['url']),
+            headers: {'Content-Type': 'application/json'},
+          ),
+        );
+      },
+    );
+
+    test(
+      'should return the list of pokemon models',
+      () async {
+        // arrange
+        setUpMockListPokemonSuccessResponse(isMore: true);
+
+        setUpMockHttpPokemonDetailsSuccessResponse(
+          firstPokemonJsonString: thirdPokemonJsonString,
+          secondPokemonJsonString: fourthPokemonJsonString,
+          decodedReturnedPokemonsList:
+              decodedReturnedPokemonsList.getRange(2, 4).toList(),
+        );
+        setUpMockJsonDecode(isMore: true);
+        // arrange jsonCodec stubs
+
+        // act
+        final result = await remoteDataSource.getMorePokemons(offset: 2);
+
+        // assert
+        verify(
+          mockHttpClient.get(
+            Uri.parse(tMorePokemonsEndpoint),
+            headers: {'Content-Type': 'application/json'},
+          ),
+        );
+
+        verify(
+          mockHttpClient.get(
+            Uri.parse(decodedReturnedPokemonsList[2]['url']),
+            headers: {'Content-Type': 'application/json'},
+          ),
+        );
+
+        final expectedPokemons =
+            _getMoreTestPokemons(rawMorePokemonsListJsonString);
+
+        expect(result, expectedPokemons);
+      },
+    );
+
+    test(
+      'should throw a ServerException when the response from [LIST_POKEMONS_ENDPOINT] is 404 or other',
+      () async {
+        // arrange
+        setUpMockListPokemonFailureResponse(isMore: true);
+        // act
+        final call = remoteDataSource.getMorePokemons;
+
+        // assert
+        expect(() => call(offset: 2), throwsA(isA<ServerException>()));
+      },
+    );
+
+    test(
+      'should throw a ServerException when the response from pokemon details is 404 or other',
+      () async {
+        // arrange
+        setUpMockListPokemonSuccessResponse(isMore: true);
+
+        setUpMockHttpPokemonDetailsFailureResponse(
+          decodedReturnedPokemonsList:
+              decodedReturnedPokemonsList.getRange(2, 4).toList(),
+          firstPokemonJsonString: thirdPokemonJsonString,
+          secondPokemonJsonString: fourthPokemonJsonString,
+        );
+
+        setUpMockJsonDecode(isMore: true);
+        // act
+        final call = remoteDataSource.getMorePokemons;
+
+        // assert
+        expect(() => call(offset: 2), throwsA(isA<ServerException>()));
+      },
+    );
+  });
 }
 
 List<PokemonModel> _getInitialTestPokemons(String fixture) {
   final pokemonJsonMaps = _getTestPokemonJsonMaps();
+  return List.generate(
+      2, (index) => PokemonModel.fromJson(pokemonJsonMaps[index]));
+}
+
+List<PokemonModel> _getMoreTestPokemons(String fixture) {
+  final pokemonJsonMaps = _getTestPokemonJsonMaps().getRange(2, 4).toList();
   return List.generate(
       2, (index) => PokemonModel.fromJson(pokemonJsonMaps[index]));
 }

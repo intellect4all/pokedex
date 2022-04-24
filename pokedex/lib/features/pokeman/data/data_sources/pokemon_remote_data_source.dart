@@ -67,8 +67,31 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
   }
 
   @override
-  Future<List<PokemonModel>> getMorePokemons({required int offset}) {
-    // TODO: implement getMorePokemons
-    throw UnimplementedError();
+  Future<List<PokemonModel>> getMorePokemons({required int offset}) async {
+    List<PokemonModel> pokemons = [];
+    final responseFromListPokemons = await client.get(
+      Uri.parse(LIST_POKEMONS_ENDPOINT + '&offset=$offset'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (responseFromListPokemons.statusCode == 200) {
+      final pokemonsListJson = jsonCodec.decode(responseFromListPokemons.body);
+      for (var pokemon in pokemonsListJson) {
+        final pokemonDetailsResponse = await client.get(
+          Uri.parse(pokemon['url']),
+          headers: {'Content-Type': 'application/json'},
+        );
+        if (pokemonDetailsResponse.statusCode == 200) {
+          final pokemonDetailsJsonMap =
+              jsonCodec.decode(pokemonDetailsResponse.body);
+          pokemons.add(PokemonModel.fromJson(pokemonDetailsJsonMap));
+        } else {
+          throw ServerException();
+        }
+      }
+      return pokemons;
+    } else {
+      throw ServerException();
+    }
   }
 }

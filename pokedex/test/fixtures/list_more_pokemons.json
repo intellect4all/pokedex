@@ -1,0 +1,15 @@
+{
+    "count": 1126,
+    "next": null,
+    "previous": null,
+    "results": [
+      {
+        "name": "venusaur",
+        "url": "https://pokeapi.co/api/v2/pokemon/3/"
+      },
+      {
+        "name": "charmander",
+        "url": "https://pokeapi.co/api/v2/pokemon/4/"
+      }
+    ]
+  }
