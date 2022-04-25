@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:pokedex/core/constants/keys.dart';
-import 'package:pokedex/core/utils/network_info/network_info.dart';
+import 'package:pokedex/core/utils/network_info.dart';
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_local_data_source.dart';
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_remote_data_source.dart';
 import 'package:pokedex/features/pokeman/data/repositories/pokemon_repository_implementation.dart';

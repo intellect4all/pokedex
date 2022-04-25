@@ -4,7 +4,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pokedex/core/errors/exceptions.dart';
 import 'package:pokedex/core/errors/failure.dart';
-import 'package:pokedex/core/utils/network_info/network_info.dart';
+import 'package:pokedex/core/utils/network_info.dart';
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_local_data_source.dart';
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_remote_data_source.dart';
 import 'package:pokedex/features/pokeman/data/models/all_stats_model.dart';

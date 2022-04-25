@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pokedex/core/constants/api_endpoints.dart';
 import 'package:pokedex/core/errors/exceptions.dart';
@@ -45,7 +47,8 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
     );
 
     if (responseFromListPokemons.statusCode == 200) {
-      final pokemonsListJson = jsonCodec.decode(responseFromListPokemons.body);
+      final response = jsonCodec.decode(responseFromListPokemons.body);
+      final pokemonsListJson = response['results'];
       for (var pokemon in pokemonsListJson) {
         final pokemonDetailsResponse = await client.get(
           Uri.parse(pokemon['url']),
@@ -61,6 +64,10 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
       }
       return pokemons;
     } else {
+      log(responseFromListPokemons.body.toString());
+      log(responseFromListPokemons.statusCode.toString());
+      debugPrint(responseFromListPokemons.body.toString());
+      debugPrint(responseFromListPokemons.statusCode.toString());
       throw ServerException();
     }
   }
@@ -74,7 +81,8 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
     );
 
     if (responseFromListPokemons.statusCode == 200) {
-      final pokemonsListJson = jsonCodec.decode(responseFromListPokemons.body);
+      final response = jsonCodec.decode(responseFromListPokemons.body);
+      final pokemonsListJson = response['results'];
       for (var pokemon in pokemonsListJson) {
         final pokemonDetailsResponse = await client.get(
           Uri.parse(pokemon['url']),
@@ -90,6 +98,10 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
       }
       return pokemons;
     } else {
+      log(responseFromListPokemons.body.toString());
+      log(responseFromListPokemons.statusCode.toString());
+      debugPrint(responseFromListPokemons.body.toString());
+      debugPrint(responseFromListPokemons.statusCode.toString());
       throw ServerException();
     }
   }

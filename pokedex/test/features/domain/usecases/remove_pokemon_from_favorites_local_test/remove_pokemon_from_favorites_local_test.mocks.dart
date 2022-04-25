@@ -7,7 +7,7 @@ import 'dart:async' as _i7;
 import 'package:dartz/dartz.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:pokedex/core/errors/failure.dart' as _i8;
-import 'package:pokedex/core/utils/network_info/network_info.dart' as _i2;
+import 'package:pokedex/core/utils/network_info.dart' as _i2;
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_local_data_source.dart'
     as _i3;
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_remote_data_source.dart'

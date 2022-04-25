@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:pokedex/core/errors/exceptions.dart';
-import 'package:pokedex/core/utils/network_info/network_info.dart';
+import 'package:pokedex/core/utils/network_info.dart';
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_local_data_source.dart';
 import 'package:pokedex/features/pokeman/data/data_sources/pokemon_remote_data_source.dart';
 import 'package:pokedex/features/pokeman/data/models/pokemon_model.dart';
