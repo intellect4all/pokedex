@@ -21,6 +21,8 @@ import 'package:pokedex/features/pokeman/domain/usecases/get_more_pokemons_useca
     as _i9;
 import 'package:pokedex/features/pokeman/domain/usecases/remove_pokemon_from_favorites_local_usecase.dart'
     as _i12;
+import 'package:pokedex/features/pokeman/presentation/pokemon_helper.dart'
+    as _i13;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -125,4 +127,26 @@ class MockRemovePokemonFromFavoritesLocalUseCase extends _i1.Mock
                   Future<_i3.Either<_i6.Failure, _i11.SuccessEntity>>.value(
                       _FakeEither_1<_i6.Failure, _i11.SuccessEntity>()))
           as _i5.Future<_i3.Either<_i6.Failure, _i11.SuccessEntity>>);
+}
+
+/// A class which mocks [PokemonHelper].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPokemonHelper extends _i1.Mock implements _i13.PokemonHelper {
+  MockPokemonHelper() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  List<_i7.Pokemon> changePokemonFavoriteState(
+          {_i7.Pokemon? pokemon,
+          bool? isFavorite,
+          List<_i7.Pokemon>? pokemons}) =>
+      (super.noSuchMethod(
+          Invocation.method(#changePokemonFavoriteState, [], {
+            #pokemon: pokemon,
+            #isFavorite: isFavorite,
+            #pokemons: pokemons
+          }),
+          returnValue: <_i7.Pokemon>[]) as List<_i7.Pokemon>);
 }

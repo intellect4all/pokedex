@@ -21,20 +21,24 @@ class LoadMorePokemonsEvent extends PokemonEvent {
 
 class AddPokemonToFavoriteEvent extends PokemonEvent {
   final Pokemon pokemonToFavorite;
+  final List<Pokemon> currentPokemons;
   const AddPokemonToFavoriteEvent({
     required this.pokemonToFavorite,
+    required this.currentPokemons,
   });
 
   @override
-  List<Object> get props => [pokemonToFavorite];
+  List<Object> get props => [pokemonToFavorite, currentPokemons];
 }
 
 class RemovePokemonFromFavoriteEvent extends PokemonEvent {
   final Pokemon pokemon;
+  final List<Pokemon> currentPokemons;
   const RemovePokemonFromFavoriteEvent({
     required this.pokemon,
+    required this.currentPokemons,
   });
 
   @override
-  List<Object> get props => [pokemon];
+  List<Object> get props => [pokemon, currentPokemons];
 }
