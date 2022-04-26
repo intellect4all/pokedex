@@ -1,10 +1,5 @@
-import 'dart:developer';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_reorderable_grid_view/entities/order_update_entity.dart';
 import 'package:flutter_reorderable_grid_view/widgets/reorderable_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pokedex/core/constants/assets.dart';
@@ -16,7 +11,6 @@ import 'package:pokedex/features/pokeman/presentation/pokemon_helper.dart';
 import 'package:pokedex/features/pokeman/presentation/view/widgets/app_divider.dart';
 import 'package:pokedex/features/pokeman/presentation/view/widgets/custom_tab_bar.dart';
 import 'package:pokedex/features/pokeman/presentation/view/widgets/pokemon_card.dart';
-import 'package:string_extensions/string_extensions.dart';
 
 class PokemonHomeScreen extends StatefulWidget {
   static const routeName = '/pokemon-home-screen';
@@ -40,6 +34,7 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen> {
   bool canLoadMorePokemons = true;
 
   List<Widget> get pokemonWidgets => _getPokemonWidgets();
+  bool get isBigScreen => MediaQuery.of(context).size.width > 600;
 
   @override
   void initState() {
@@ -61,7 +56,42 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen> {
         child: BlocConsumer<PokemonBloc, PokemonState>(
           listener: _handlePageListener,
           builder: (context, state) {
-            if (_pokemons.isEmpty) {
+            if (state is LoadInitialPokemonErrorState) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Error fetching your pokemons',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Please check your internet and click the button below to try again',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: _loadInitialPokemons,
+                      child: const Text('Reload'),
+                      style: ElevatedButton.styleFrom(
+                        primary: AppColors.ceruleanBlue,
+                      ),
+                    ),
+                  ],
+                ),
+              ).space(left: 30, right: 30);
+            } else if (_pokemons.isEmpty) {
               return _buildInitialLoadingWidgets();
             } else {
               return Column(
@@ -70,6 +100,7 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen> {
                     child: Container(
                       color: const Color(0xFFE8E8E8),
                       padding: const EdgeInsets.symmetric(horizontal: 10),
+                      width: double.infinity,
                       child: NotificationListener<ScrollNotification>(
                         onNotification: _handleScrollNotification,
                         child: ReorderableBuilder(
@@ -81,8 +112,8 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen> {
                               controller: scrollController,
                               physics: const BouncingScrollPhysics(),
                               gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: isBigScreen ? 6 : 3,
                                 mainAxisSpacing: 0,
                                 crossAxisSpacing: 10,
                                 mainAxisExtent: 220,
@@ -155,13 +186,20 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen> {
           )
           .toList();
 
-      log(state.pokemons.toString());
       setState(() {
         canLoadMorePokemons = true;
         offset += 20;
       });
     } else if (state is LoadInitialPokemonErrorState) {
-      log(state.message);
+      setState(() {
+        canLoadMorePokemons = true;
+      });
+      _showErrorSnackBar(state.message);
+    } else if (state is LoadMorePokemonErrorState) {
+      setState(() {
+        canLoadMorePokemons = true;
+      });
+      _showErrorSnackBar(state.message);
     } else if (state is PokemonAddedToFavoriteState) {
       _pokemons = _pokemonHelper.changePokemonFavoriteState(
         pokemon: state.pokemon,
@@ -177,7 +215,6 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen> {
       );
       setState(() {});
     }
-    log(state.runtimeType.toString());
   }
 
   void _loadInitialPokemons() {
@@ -271,7 +308,10 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen> {
         (index) {
           final pokemon = _pokemons[index];
           return PokemonCard(
-              key: Key(pokemon.id.toString()), pokemon: pokemon, index: index);
+            key: Key(pokemon.id.toString()),
+            pokemon: pokemon,
+            pokemanIndex: index,
+          );
         },
       );
     } else {
@@ -280,9 +320,52 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen> {
         (index) {
           final pokemon = favoritePokemons[index];
           return PokemonCard(
-              key: Key(pokemon.id.toString()), pokemon: pokemon, index: index);
+            key: Key(pokemon.id.toString()),
+            pokemon: pokemon,
+            pokemanIndex: index,
+          );
         },
       );
     }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        content: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: AppColors.ceruleanBlue,
+          ),
+          padding: const EdgeInsets.all(15),
+          margin: const EdgeInsets.all(7),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Error',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                ),
+              ).space(
+                bottom: 10,
+              ),
+              Text(
+                message,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

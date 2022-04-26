@@ -63,13 +63,13 @@ void main() {
     () async {
       // arrange
       when(mockPokemonRepository.getInitialPokeMons())
-          .thenAnswer((_) async => Right(tPokemons));
+          .thenAnswer((_) async => const Right(tPokemons));
 
       // act
       final result = await getInitialPokemonsUseCase(NoParams());
       // assert
 
-      expect(result, Right(tPokemons));
+      expect(result, const Right(tPokemons));
 
       verify(mockPokemonRepository.getInitialPokeMons());
 

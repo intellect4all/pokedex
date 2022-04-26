@@ -1,4 +1,3 @@
-import 'package:mockito/mockito.dart';
 import 'package:pokedex/features/pokeman/domain/entities/all_stats.dart';
 import 'package:pokedex/features/pokeman/domain/entities/base_stat_type.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';

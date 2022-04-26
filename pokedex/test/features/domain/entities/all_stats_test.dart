@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pokedex/features/pokeman/domain/entities/all_stats.dart';
 import 'package:pokedex/features/pokeman/domain/entities/base_stat_type.dart';
-
-import '../../../fixtures/fixture_reader.dart';
 
 void main() {
   test('should test that getAveragePower returns 2.0 when all stats are 2',

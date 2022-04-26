@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pokedex/core/constants/colors.dart';
 import 'package:pokedex/core/constants/strings.dart';
 import 'package:pokedex/features/pokeman/presentation/pokemon_bloc.dart';
 import 'package:pokedex/features/pokeman/presentation/view/pokedex_home_screen.dart';
@@ -34,12 +33,6 @@ class MyApp extends StatelessWidget {
           );
         },
         theme: ThemeData(
-          primaryColor: AppColors.ceruleanBlue,
-          primarySwatch: Colors.blue,
-          textTheme: TextTheme(
-              headlineLarge: TextStyle(
-            color: AppColors.darkGunmetal,
-          )),
           fontFamily: 'Noto Sans',
         ),
         initialRoute: SplashScreen.routeName,

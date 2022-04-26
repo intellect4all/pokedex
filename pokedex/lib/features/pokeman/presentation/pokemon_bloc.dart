@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pokedex/core/constants/strings.dart';
+import 'package:pokedex/core/errors/failure.dart';
 import 'package:pokedex/core/usecases/usecase.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
 import 'package:pokedex/features/pokeman/domain/usecases/add_pokemon_to_favorites_usecase.dart';
@@ -69,10 +70,16 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
     );
 
     failureOrPokemons.fold(
-      (failure) => emit(
-        const LoadMorePokemonErrorState(
-            message: LOAD_MORE_POKEMONS_FAILURE_MESSAGE),
-      ),
+      (failure) {
+        String message = LOAD_MORE_POKEMONS_FAILURE_MESSAGE;
+
+        if (failure is DeviceOfflineFailure) {
+          message = DEVICE_OFFLINE_ERROR_MESSAGE;
+        }
+        emit(
+          LoadMorePokemonErrorState(message: message),
+        );
+      },
       (pokemons) => emit(PokemonsLoadedState(pokemons: pokemons)),
     );
   }

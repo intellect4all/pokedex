@@ -10,6 +10,8 @@ const ADD_TO_FAVORITES_ERROR_MESSAGE =
 const REMOVE_FROM_FAVORITES_ERROR_MESSAGE =
     'An error occurred while adding pokemon to favorites';
 
+const DEVICE_OFFLINE_ERROR_MESSAGE = 'Error loading more pokemons';
+
 class Strings {
   static const appName = 'Pokemon Pokedex';
 }

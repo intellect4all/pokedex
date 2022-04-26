@@ -11,4 +11,10 @@ class AppColors {
   static const palatinateBlue = Color(0xFF1844EE);
   static const maximumGreen = Color(0xFF688335);
   static const paleLavendar = Color(0xFFD5DEFF);
+  static const lavendarBlush = Color(0xFFFDF1F1);
+  static const honeyDew = Color(0xFFF3F9EF);
+  static const aliceBlue = Color(0xFFF3F9FE);
+  static const dirtyWhite = Color(0xFFDCEECF);
+  static const paleLavendar2 = Color(0xFFF79696);
+  static const greenBlue = Color(0xFF1971B9);
 }

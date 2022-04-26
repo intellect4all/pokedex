@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:pokedex/core/constants/colors.dart';
 import 'package:pokedex/core/utils/utils.dart';
-import 'package:pokedex/features/pokeman/presentation/view/pokedex_home_screen.dart';
 
 class CustomTabBar extends StatefulWidget {
   const CustomTabBar({
@@ -52,7 +50,10 @@ class _CustomTabBarState extends State<CustomTabBar> {
         Row(
           children: [
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                splashFactory: NoSplash.splashFactory,
                 onTap: () => _handleOnTapBarTapped(DisplayState.allPokemons),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -69,7 +70,10 @@ class _CustomTabBarState extends State<CustomTabBar> {
               ),
             ),
             Expanded(
-              child: GestureDetector(
+              child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                splashFactory: NoSplash.splashFactory,
                 onTap: () =>
                     _handleOnTapBarTapped(DisplayState.favoritePokemons),
                 child: Padding(

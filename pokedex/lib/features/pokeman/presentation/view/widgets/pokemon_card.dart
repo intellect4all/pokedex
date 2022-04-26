@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:pokedex/core/constants/colors.dart';
 import 'package:pokedex/core/utils/utils.dart';
@@ -13,9 +10,10 @@ class PokemonCard extends StatelessWidget {
   const PokemonCard({
     Key? key,
     required this.pokemon,
-    required int index,
+    required this.pokemanIndex,
   }) : super(key: key);
 
+  final int pokemanIndex;
   final Pokemon pokemon;
 
   @override
@@ -24,10 +22,10 @@ class PokemonCard extends StatelessWidget {
       onTap: () => _navigateToPokemonDetailsScreen(context),
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-        constraints: const BoxConstraints(
-          maxWidth: 120,
-          maxHeight: 220,
-        ),
+        // constraints: const BoxConstraints(
+        //   maxWidth: 200,
+        //   maxHeight: 220,
+        // ),
         width: double.infinity,
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -41,7 +39,8 @@ class PokemonCard extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(10),
-              color: const Color(0xFFF3F9EF),
+              width: double.infinity,
+              color: getColor(),
               child: ClipRRect(
                 child: PokemonImageWidget(
                   pokemon: pokemon,
@@ -94,8 +93,23 @@ class PokemonCard extends StatelessWidget {
   _navigateToPokemonDetailsScreen(BuildContext context) {
     Navigation.intentUsingWidget(
       context,
-      PokemonDetailsScreen(pokemon: pokemon),
+      PokemonDetailsScreen(
+        pokemon: pokemon,
+        color: getColor(),
+      ),
       PokemonDetailsScreen.routeName,
     );
+  }
+
+  Color getColor() {
+    final rem = (pokemanIndex + 1) % 9;
+
+    if (rem == 0 || rem == 8 || rem == 7) {
+      return AppColors.aliceBlue;
+    } else if (rem == 4 || rem == 5 || rem == 6) {
+      return AppColors.lavendarBlush;
+    } else {
+      return AppColors.honeyDew;
+    }
   }
 }

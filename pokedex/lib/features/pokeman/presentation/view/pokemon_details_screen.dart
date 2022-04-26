@@ -1,7 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg/parser.dart';
 import 'package:pokedex/core/constants/assets.dart';
 import 'package:pokedex/core/constants/colors.dart';
 import 'package:pokedex/core/utils/utils.dart';
@@ -17,25 +15,47 @@ class PokemonDetailsScreen extends StatelessWidget {
   static const routeName = '/pokemon-details-screen';
 
   final Pokemon pokemon;
-
+  final Color? color;
   const PokemonDetailsScreen({
     Key? key,
     required this.pokemon,
+    this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
+      body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            _buildPokemonImage(),
-            _buildHeightWeightBMISection(),
-            _buildStatSection(pokemon.stats)
-          ],
-        ),
+        slivers: [
+          SliverAppBar(
+            backgroundColor: color ?? AppColors.honeyDew,
+            expandedHeight: 50.0,
+            automaticallyImplyLeading: false,
+            pinned: true,
+            flexibleSpace: InkWell(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashFactory: NoSplash.splashFactory,
+              onTap: () => Navigation.back(context),
+              child: const Align(
+                alignment: Alignment.bottomLeft,
+                child: Icon(
+                  Icons.chevron_left,
+                ),
+              ).space(left: 15, bottom: 15),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (_, int index) {
+                final children = _getChildren();
+                return children[index];
+              },
+              childCount: _getChildren().length,
+            ),
+          )
+        ],
       ),
       floatingActionButton: FavoritePokemonFAB(pokemon: pokemon),
     );
@@ -110,7 +130,7 @@ class PokemonDetailsScreen extends StatelessWidget {
   Widget _buildPokemonImage() {
     return Container(
       height: 200,
-      color: const Color(0xFFF3F9EF),
+      color: color ?? AppColors.honeyDew,
       width: double.infinity,
       child: Stack(
         children: [
@@ -124,7 +144,7 @@ class PokemonDetailsScreen extends StatelessWidget {
                 Assets.pokemonImageBackGround,
                 height: 176,
                 width: 176,
-                // color: Colors.red,
+                color: _getSvgColor(),
               ),
             ),
           ),
@@ -265,6 +285,25 @@ class PokemonDetailsScreen extends StatelessWidget {
         ),
       ],
     ).space(left: 16, right: 16, top: 12, bottom: 15);
+  }
+
+  List<Widget> _getChildren() {
+    return [
+      const AppDivider(
+        height: 0,
+        thickness: 4,
+        color: Colors.red,
+      ),
+      _buildPokemonImage(),
+      _buildHeightWeightBMISection(),
+      _buildStatSection(pokemon.stats)
+    ];
+  }
+
+  Color? _getSvgColor() {
+    if (color == null) return AppColors.dirtyWhite;
+    if (color == AppColors.aliceBlue) return AppColors.greenBlue;
+    if (color == AppColors.lavendarBlush) return AppColors.paleLavendar2;
   }
 }
 

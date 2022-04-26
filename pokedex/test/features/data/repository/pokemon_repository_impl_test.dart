@@ -177,7 +177,7 @@ void main() {
               .thenAnswer((_) async => tPokemonModels);
 
           // act
-          final result = await repository.getInitialPokeMons();
+          await repository.getInitialPokeMons();
 
           // assert
           verify(mockPokemonRemoteDataSource.getInitialPokemons());

@@ -282,7 +282,7 @@ void main() {
   });
 
   group('getMorePokemons', () {
-    final tMorePokemonsEndpoint = LIST_POKEMONS_ENDPOINT + '&offset=2';
+    const tMorePokemonsEndpoint = LIST_POKEMONS_ENDPOINT + '&offset=2';
     test(
       '''should perform a GET request on the https://pokeapi.co/api/v2/pokemon?limit=FETCH_LIMIT&offset=offset endpoint
        and with an application/json header''',
