@@ -70,8 +70,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _navigateToHomeScreen() async {
     Future.delayed(
-      const Duration(seconds: 1),
-      () => Navigation.intent(
+      const Duration(seconds: 2),
+      () => Navigation.intentAndReplace(
         context,
         PokemonHomeScreen.routeName,
       ),

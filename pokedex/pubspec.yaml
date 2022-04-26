@@ -17,7 +17,6 @@ dependencies:
   string_extensions: ^0.4.4
   flutter_reorderable_grid_view: ^2.1.0
   cached_network_image: ^3.2.0
-  flutter_animator: ^3.2.1
   flutter_bloc: ^7.0.0
   flutter_svg: ^1.0.3
 
