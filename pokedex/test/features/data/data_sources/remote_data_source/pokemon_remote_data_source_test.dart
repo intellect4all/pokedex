@@ -74,14 +74,14 @@ void main() {
   setUpMockJsonDecode({isMore = false}) {
     if (isMore) {
       when(jsonCodec.decode(rawMorePokemonsListJsonString))
-          .thenReturn(decodedReturnedPokemonsList.getRange(2, 4).toList());
+          .thenReturn(tDecodedListMorePokemonsResponseMap);
       when(jsonCodec.decode(thirdPokemonJsonString))
           .thenReturn(tPokemonMaps[2]);
       when(jsonCodec.decode(fourthPokemonJsonString))
           .thenReturn(tPokemonMaps[3]);
     } else {
       when(jsonCodec.decode(rawPokemonsListJsonString))
-          .thenReturn(decodedReturnedPokemonsList.getRange(0, 2).toList());
+          .thenReturn(tDecodedListInitialPokemonsResponseMap);
       when(jsonCodec.decode(firstPokemonJsonString))
           .thenReturn(tPokemonMaps[0]);
       when(jsonCodec.decode(secondPokemonJsonString))
@@ -657,3 +657,23 @@ List<Map<String, dynamic>> _getTestPokemonJsonMaps() {
     },
   ];
 }
+
+Map<String, dynamic> get tDecodedListInitialPokemonsResponseMap => {
+      "count": 1126,
+      "next": "https://pokeapi.co/api/v2/pokemon?offset=20&limit=20",
+      "previous": null,
+      "results": [
+        {"name": "bulbasaur", "url": "https://pokeapi.co/api/v2/pokemon/1/"},
+        {"name": "ivysaur", "url": "https://pokeapi.co/api/v2/pokemon/2/"}
+      ]
+    };
+
+Map<String, dynamic> get tDecodedListMorePokemonsResponseMap => {
+      "count": 1126,
+      "next": null,
+      "previous": null,
+      "results": [
+        {"name": "venusaur", "url": "https://pokeapi.co/api/v2/pokemon/3/"},
+        {"name": "charmander", "url": "https://pokeapi.co/api/v2/pokemon/4/"}
+      ]
+    };

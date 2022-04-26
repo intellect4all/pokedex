@@ -1,0 +1,4 @@
+enum DisplayState {
+  allPokemons,
+  favoritePokemons,
+}

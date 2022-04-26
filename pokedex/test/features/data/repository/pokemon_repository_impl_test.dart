@@ -737,8 +737,13 @@ void main() {
 
         // assert
         verifyZeroInteractions(mockPokemonRemoteDataSource);
-        verify(mockPokemonLocalDataSource
-            .cacheFavoritePokemon(PokemonModel.fromPokemon(tPokemon)));
+        verify(
+          mockPokemonLocalDataSource.cacheFavoritePokemon(
+            PokemonModel.fromPokemon(tPokemon).copyWith(
+              isFavorite: true,
+            ),
+          ),
+        );
       },
     );
 
@@ -755,8 +760,8 @@ void main() {
 
         // assert
         verifyZeroInteractions(mockPokemonRemoteDataSource);
-        verify(mockPokemonLocalDataSource
-            .cacheFavoritePokemon(PokemonModel.fromPokemon(tPokemon)));
+        verify(mockPokemonLocalDataSource.cacheFavoritePokemon(
+            PokemonModel.fromPokemon(tPokemon).copyWith(isFavorite: true)));
         expect(result, Right(SuccessEntity()));
       },
     );
@@ -774,8 +779,8 @@ void main() {
 
         // assert
         verifyZeroInteractions(mockPokemonRemoteDataSource);
-        verify(mockPokemonLocalDataSource
-            .cacheFavoritePokemon(PokemonModel.fromPokemon(tPokemon)));
+        verify(mockPokemonLocalDataSource.cacheFavoritePokemon(
+            PokemonModel.fromPokemon(tPokemon).copyWith(isFavorite: true)));
         expect(result, Left(CacheFailure()));
       },
     );

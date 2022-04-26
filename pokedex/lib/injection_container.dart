@@ -27,7 +27,6 @@ Future<void> init() async {
       getMorePokemonsUseCase: sl(),
       addPokemonToFavoritesLocalUseCase: sl(),
       removePokemonFromFavoritesLocalUseCase: sl(),
-      pokemonHelper: sl(),
     ),
   );
 

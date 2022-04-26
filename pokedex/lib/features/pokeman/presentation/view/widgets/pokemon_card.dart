@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:pokedex/core/constants/colors.dart';
 import 'package:pokedex/core/utils/utils.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
+import 'package:pokedex/features/pokeman/presentation/view/pokemon_details_screen.dart';
+import 'package:pokedex/features/pokeman/presentation/view/widgets/pokemon_image.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 class PokemonCard extends StatelessWidget {
@@ -19,9 +21,7 @@ class PokemonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        log(pokemon.toString());
-      },
+      onTap: () => _navigateToPokemonDetailsScreen(context),
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
         constraints: const BoxConstraints(
@@ -43,19 +43,9 @@ class PokemonCard extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               color: const Color(0xFFF3F9EF),
               child: ClipRRect(
-                child: CachedNetworkImage(
-                  imageUrl: pokemon.imageUrl,
-                  placeholder: (_, __) => Container(
-                    height: 100,
-                    width: 100,
-                    color: Color(0xFFF3F9EF),
-                    child: CircularProgressIndicator(
-                      backgroundColor: AppColors.ceruleanBlue.withOpacity(0.3),
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                          AppColors.ceruleanBlue),
-                    ),
-                  ),
-                  fit: BoxFit.contain,
+                child: PokemonImageWidget(
+                  pokemon: pokemon,
+                  size: const Size(100, 100),
                 ),
               ),
             ),
@@ -81,9 +71,8 @@ class PokemonCard extends StatelessWidget {
   }
 
   Widget _buildPokemonTypes() {
-    String types = pokemon.types.join(', ').toTitleCase!;
     return Text(
-      types,
+      HelperFunctions.joinListToString(pokemon.types),
       style: const TextStyle(
         fontSize: 12,
         color: AppColors.dimGray,
@@ -92,10 +81,7 @@ class PokemonCard extends StatelessWidget {
   }
 
   Widget _buildPokemonId() {
-    //* this code will duplicate '0' by the remainder times;
-    String duplicateO = '0' * (4 - (pokemon.id.toString().length));
-    // concatenation to give the format '#0001'
-    String formattedId = '#$duplicateO${pokemon.id}';
+    final formattedId = HelperFunctions.formatPokemonId(pokemon.id);
     return Text(
       formattedId,
       style: const TextStyle(
@@ -103,5 +89,13 @@ class PokemonCard extends StatelessWidget {
         color: AppColors.dimGray,
       ),
     ).space(bottom: 2);
+  }
+
+  _navigateToPokemonDetailsScreen(BuildContext context) {
+    Navigation.intentUsingWidget(
+      context,
+      PokemonDetailsScreen(pokemon: pokemon),
+      PokemonDetailsScreen.routeName,
+    );
   }
 }

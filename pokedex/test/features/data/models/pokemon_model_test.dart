@@ -131,9 +131,11 @@ void main() {
           "id": 1,
           "name": "bulbasaur",
           "sprites": {
-            "official-artwork": {
-              "front_default":
-                  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+            "other": {
+              "official-artwork": {
+                "front_default":
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+              }
             }
           },
           "stats": [
@@ -186,7 +188,8 @@ void main() {
               }
             }
           ],
-          "weight": 69
+          "weight": 69,
+          "isFavorite": false,
         };
         // act
         final result = tPokemonModel.toJson();

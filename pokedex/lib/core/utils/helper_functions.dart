@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 class HelperFunctions {
   static setStatusBarDarkTheme() {
@@ -22,5 +23,16 @@ class HelperFunctions {
       systemNavigationBarIconBrightness:
           Brightness.light, //navigation bar icons' color
     ));
+  }
+
+  static String joinListToString(List<String> types) {
+    return types.join(', ').toTitleCase!;
+  }
+
+  static String formatPokemonId(int id) {
+    //* this code will duplicate '0' by the remainder times;
+    String duplicateO = '0' * (4 - (id.toString().length));
+    // concatenation to give the format '#0001'
+    return '#' + duplicateO + id.toString();
   }
 }

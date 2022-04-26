@@ -12,14 +12,11 @@ import 'package:pokedex/core/constants/colors.dart';
 import 'package:pokedex/core/utils/utils.dart';
 import 'package:pokedex/features/pokeman/domain/entities/pokemon.dart';
 import 'package:pokedex/features/pokeman/presentation/pokemon_bloc.dart';
+import 'package:pokedex/features/pokeman/presentation/pokemon_helper.dart';
 import 'package:pokedex/features/pokeman/presentation/view/widgets/app_divider.dart';
+import 'package:pokedex/features/pokeman/presentation/view/widgets/custom_tab_bar.dart';
 import 'package:pokedex/features/pokeman/presentation/view/widgets/pokemon_card.dart';
 import 'package:string_extensions/string_extensions.dart';
-
-enum DisplayState {
-  allPokemons,
-  favoritePokemons,
-}
 
 class PokemonHomeScreen extends StatefulWidget {
   static const routeName = '/pokemon-home-screen';
@@ -29,15 +26,16 @@ class PokemonHomeScreen extends StatefulWidget {
   State<PokemonHomeScreen> createState() => _PokemonHomeScreenState();
 }
 
-class _PokemonHomeScreenState extends State<PokemonHomeScreen>
-    with TickerProviderStateMixin {
-  late TabController _tabController;
-  late final List<GlobalKey<AnimatorWidgetState>> _animKeys;
+class _PokemonHomeScreenState extends State<PokemonHomeScreen> {
+  late PokemonHelper _pokemonHelper;
 
   List<Pokemon> _pokemons = [];
-  List<Pokemon> _favoritePokemons = [];
+  List<Pokemon> get favoritePokemons =>
+      _pokemons.where((element) => element.isFavorite).toList();
 
   DisplayState currentDisplayState = DisplayState.allPokemons;
+
+  int offset = 0;
 
   bool canLoadMorePokemons = true;
 
@@ -45,8 +43,9 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen>
 
   @override
   void initState() {
+    _pokemonHelper = PokemonHelper();
     _loadInitialPokemons();
-    _initializeTabBarAnimation(this);
+
     super.initState();
   }
 
@@ -55,7 +54,7 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen>
     HelperFunctions.setStatusBarDarkTheme();
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120),
+        preferredSize: const Size.fromHeight(125),
         child: _buildAppBar(),
       ),
       body: SafeArea(
@@ -63,48 +62,13 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen>
           listener: _handlePageListener,
           builder: (context, state) {
             if (_pokemons.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Welcome,',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'we are fetching initial pokemons for you',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: CircularProgressIndicator(
-                        backgroundColor:
-                            AppColors.ceruleanBlue.withOpacity(0.3),
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                            AppColors.ceruleanBlue),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return _buildInitialLoadingWidgets();
             } else {
               return Column(
                 children: [
                   Expanded(
                     child: Container(
-                      color: Color(0xFFE8E8E8),
+                      color: const Color(0xFFE8E8E8),
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: NotificationListener<ScrollNotification>(
                         onNotification: _handleScrollNotification,
@@ -139,62 +103,85 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen>
     );
   }
 
+  Center _buildInitialLoadingWidgets() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'Welcome,',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'we are fetching initial pokemons for you',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 100,
+            width: 100,
+            child: CircularProgressIndicator(
+              backgroundColor: AppColors.ceruleanBlue.withOpacity(0.3),
+              valueColor:
+                  const AlwaysStoppedAnimation<Color>(AppColors.ceruleanBlue),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void dispose() {
-    _disposeAnimationComponents();
     super.dispose();
   }
 
   void _handlePageListener(BuildContext context, PokemonState state) {
     if (state is PokemonsLoadedState) {
-      _pokemons.addAll(state.pokemons);
-      _favoritePokemons =
-          _pokemons.where((element) => element.id % 2 == 1).toList();
+      _pokemons = _pokemonHelper
+          .cleansPokemons(
+            newPokemons: state.pokemons,
+            currentPokemons: _pokemons,
+          )
+          .toList();
+
+      log(state.pokemons.toString());
       setState(() {
         canLoadMorePokemons = true;
+        offset += 20;
       });
     } else if (state is LoadInitialPokemonErrorState) {
       log(state.message);
     } else if (state is PokemonAddedToFavoriteState) {
-      setState(() {
-        _pokemons = state.newPokemons;
-      });
+      _pokemons = _pokemonHelper.changePokemonFavoriteState(
+        pokemon: state.pokemon,
+        isFavorite: true,
+        pokemons: _pokemons,
+      );
+      setState(() {});
     } else if (state is PokemonRemovedFromFavoriteState) {
-      setState(() {
-        _pokemons = state.newPokemons;
-      });
+      _pokemons = _pokemonHelper.changePokemonFavoriteState(
+        pokemon: state.pokemon,
+        isFavorite: false,
+        pokemons: _pokemons,
+      );
+      setState(() {});
     }
     log(state.runtimeType.toString());
   }
 
   void _loadInitialPokemons() {
     BlocProvider.of<PokemonBloc>(context).add(LoadInitialPokemonsEvent());
-  }
-
-  void _animationStatus() {
-    if (_tabController.animation!.status == AnimationStatus.forward) {
-      print('Going forward');
-      // _animKeys[_tabController.index].currentState!.forward();
-    }
-  }
-
-  void _initializeTabBarAnimation(
-      _PokemonHomeScreenState _pokemonHomeScreenState) {
-    _tabController = TabController(length: 2, vsync: _pokemonHomeScreenState);
-    // ..animation!.addListener(_animationStatus);
-
-    _animKeys = List.generate(
-      2,
-      (index) => GlobalKey<AnimatorWidgetState>(),
-    );
-  }
-
-  void _disposeAnimationComponents() {
-    for (var key in _animKeys) {
-      if (key.currentState != null) {
-        key.currentState!.dispose();
-      }
-    }
   }
 
   Widget _buildAppBar() {
@@ -232,30 +219,14 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen>
           const AppDivider(
             thickness: 3,
           ),
-          TabBar(
-            tabs: [
-              Tab(
-                child: Text(
-                  'First',
-                  // style: Theme.of(context).textTheme.headlineLarge,
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-              Tab(
-                child: Text(
-                  'Second',
-                  // style: Theme.of(context).textTheme.headlineLarge,
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-            ],
-            indicatorWeight: 3,
-            // indicatorSize: TabBarIndicatorSize.label,
-            indicator: BoxDecoration(
-              color: AppColors.darkGunmetal,
-            ),
-            controller: _tabController,
-            onTap: _handleTabBarTap,
+          CustomTabBar(
+            favoritePokemonsCount: favoritePokemons.length,
+            width: MediaQuery.of(context).size.width,
+            onTapped: (DisplayState displayState) {
+              setState(() {
+                currentDisplayState = displayState;
+              });
+            },
           ),
           if (!canLoadMorePokemons) _buildTopProgressIndicator(),
         ],
@@ -289,7 +260,7 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen>
 
   void _loadMorePokemons() {
     BlocProvider.of<PokemonBloc>(context).add(
-      LoadMorePokemonsEvent(offset: _pokemons.length),
+      LoadMorePokemonsEvent(offset: offset),
     );
   }
 
@@ -305,26 +276,13 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen>
       );
     } else {
       return List.generate(
-        _favoritePokemons.length,
+        favoritePokemons.length,
         (index) {
-          final pokemon = _favoritePokemons[index];
+          final pokemon = favoritePokemons[index];
           return PokemonCard(
               key: Key(pokemon.id.toString()), pokemon: pokemon, index: index);
         },
       );
     }
-  }
-
-  void _handleTabBarTap(int value) {
-    if (value == 0) {
-      setState(() {
-        currentDisplayState = DisplayState.allPokemons;
-      });
-    } else {
-      setState(() {
-        currentDisplayState = DisplayState.favoritePokemons;
-      });
-    }
-    // _animKeys[value].currentState!.forward();
   }
 }

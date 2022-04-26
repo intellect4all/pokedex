@@ -96,8 +96,9 @@ class PokemonRepositoryImpl extends PokemonRepository {
   Future<Either<Failure, SuccessEntity>> addPokemonToFavoritesLocal(
       {required Pokemon pokemon}) async {
     try {
+      final pokemonModel = PokemonModel.fromPokemon(pokemon);
       final result = await localDataSource
-          .cacheFavoritePokemon(PokemonModel.fromPokemon(pokemon));
+          .cacheFavoritePokemon(pokemonModel.copyWith(isFavorite: true));
       return Right(result);
     } on CacheException {
       return Left(CacheFailure());
@@ -108,8 +109,9 @@ class PokemonRepositoryImpl extends PokemonRepository {
   Future<Either<Failure, SuccessEntity>> removePokemonFromFavoritesLocal(
       {required Pokemon pokemon}) async {
     try {
-      final result = await localDataSource
-          .removeFavoritePokemon(PokemonModel.fromPokemon(pokemon));
+      final pokemonModel = PokemonModel.fromPokemon(pokemon);
+      final result = await localDataSource.removeFavoritePokemon(
+          PokemonModel.fromPokemon(pokemonModel.copyWith(isFavorite: false)));
       return Right(result);
     } catch (e) {
       return Left(CacheFailure());

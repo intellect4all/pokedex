@@ -44,26 +44,24 @@ class LoadInitialPokemonErrorState extends PokemonState {
 
 class PokemonAddedToFavoriteState extends PokemonState {
   final Pokemon pokemon;
-  final List<Pokemon> newPokemons;
+
   const PokemonAddedToFavoriteState({
     required this.pokemon,
-    required this.newPokemons,
   });
 
   @override
-  List<Object> get props => [pokemon, newPokemons];
+  List<Object> get props => [pokemon];
 }
 
 class PokemonRemovedFromFavoriteState extends PokemonState {
   final Pokemon pokemon;
-  final List<Pokemon> newPokemons;
+
   const PokemonRemovedFromFavoriteState({
     required this.pokemon,
-    required this.newPokemons,
   });
 
   @override
-  List<Object> get props => [pokemon, newPokemons];
+  List<Object> get props => [pokemon];
 }
 
 class FavoritePokemonsErrorState extends PokemonState {

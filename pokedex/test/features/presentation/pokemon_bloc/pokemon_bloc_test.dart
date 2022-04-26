@@ -14,7 +14,6 @@ import 'package:pokedex/features/pokeman/domain/usecases/get_initial_pokemons_us
 import 'package:pokedex/features/pokeman/domain/usecases/get_more_pokemons_usecase.dart';
 import 'package:pokedex/features/pokeman/domain/usecases/remove_pokemon_from_favorites_local_usecase.dart';
 import 'package:pokedex/features/pokeman/presentation/pokemon_bloc.dart';
-import 'package:pokedex/features/pokeman/presentation/pokemon_helper.dart';
 
 import 'pokemon_bloc_test.mocks.dart';
 
@@ -23,7 +22,6 @@ import 'pokemon_bloc_test.mocks.dart';
   GetMorePokemonsUseCase,
   AddPokemonToFavoritesLocalUseCase,
   RemovePokemonFromFavoritesLocalUseCase,
-  PokemonHelper,
 ])
 void main() {
   late PokemonBloc bloc;
@@ -33,7 +31,7 @@ void main() {
       mockAddPokemonToFavoritesLocalUseCase;
   late MockRemovePokemonFromFavoritesLocalUseCase
       mockRemovePokemonFromFavoritesLocalUseCase;
-  late MockPokemonHelper mockPokemonHelper;
+
   setUp(() {
     mockGetInitialPokemonsUseCase = MockGetInitialPokemonsUseCase();
     mockGetMorePokemonsUseCase = MockGetMorePokemonsUseCase();
@@ -41,14 +39,13 @@ void main() {
         MockAddPokemonToFavoritesLocalUseCase();
     mockRemovePokemonFromFavoritesLocalUseCase =
         MockRemovePokemonFromFavoritesLocalUseCase();
-    mockPokemonHelper = MockPokemonHelper();
+
     bloc = PokemonBloc(
       getInitialPokemonsUseCase: mockGetInitialPokemonsUseCase,
       getMorePokemonsUseCase: mockGetMorePokemonsUseCase,
       addPokemonToFavoritesLocalUseCase: mockAddPokemonToFavoritesLocalUseCase,
       removePokemonFromFavoritesLocalUseCase:
           mockRemovePokemonFromFavoritesLocalUseCase,
-      pokemonHelper: mockPokemonHelper,
     );
   });
 
@@ -197,16 +194,7 @@ void main() {
     );
 
     addTestAddPokemonToFavoriteEventToBloc() {
-      bloc.add(AddPokemonToFavoriteEvent(
-          pokemonToFavorite: tPokemon, currentPokemons: tPokemons));
-    }
-
-    setUpMockPokemonHelper() {
-      when(mockPokemonHelper.changePokemonFavoriteState(
-              isFavorite: anyNamed('isFavorite'),
-              pokemon: anyNamed('pokemon'),
-              pokemons: anyNamed('pokemons')))
-          .thenReturn(expectedPokemonsForAddToFavorites);
+      bloc.add(const AddPokemonToFavoriteEvent(pokemonToFavorite: tPokemon));
     }
 
     setUpMockAddToFavoriteUsecase() {
@@ -219,7 +207,6 @@ void main() {
       () async {
         // arrange
         setUpMockAddToFavoriteUsecase();
-        setUpMockPokemonHelper();
         // act
         addTestAddPokemonToFavoriteEventToBloc();
         await untilCalled(mockAddPokemonToFavoritesLocalUseCase(any));
@@ -231,34 +218,16 @@ void main() {
     );
 
     test(
-      'should update the current list of pokemons',
-      () async {
-        // arrange
-        setUpMockAddToFavoriteUsecase();
-        setUpMockPokemonHelper();
-
-        // act
-        addTestAddPokemonToFavoriteEventToBloc();
-        await untilCalled(mockPokemonHelper.changePokemonFavoriteState(
-            isFavorite: true, pokemon: tPokemon, pokemons: tPokemons));
-
-        // assert
-        verify(mockPokemonHelper.changePokemonFavoriteState(
-            pokemon: tPokemon, isFavorite: true, pokemons: tPokemons));
-      },
-    );
-    test(
       'should emit a [PokemonAddedToFavoriteState] when success entity is returned',
       () async {
         // arrange
         setUpMockAddToFavoriteUsecase();
-        setUpMockPokemonHelper();
 
         // assert later
         final expected = [
-          PokemonAddedToFavoriteState(
-              pokemon: tPokemon,
-              newPokemons: expectedPokemonsForAddToFavorites),
+          const PokemonAddedToFavoriteState(
+            pokemon: tPokemon,
+          ),
         ];
 
         expectLater(bloc.stream, emitsInOrder(expected));
@@ -274,7 +243,6 @@ void main() {
 
         when(mockAddPokemonToFavoritesLocalUseCase(any))
             .thenAnswer((_) async => Left(CacheFailure()));
-        setUpMockPokemonHelper();
 
         // assert later
         final expected = [
@@ -309,18 +277,11 @@ void main() {
     );
 
     addTestRemoveFromFavoriteEventToBloc() {
-      bloc.add(RemovePokemonFromFavoriteEvent(
-        pokemon: tPokemon,
-        currentPokemons: tPokemonsForRemoveFromFavorites,
-      ));
-    }
-
-    setUpMockPokemonHelper() {
-      when(mockPokemonHelper.changePokemonFavoriteState(
-              isFavorite: anyNamed('isFavorite'),
-              pokemon: anyNamed('pokemon'),
-              pokemons: anyNamed('pokemons')))
-          .thenReturn(expectedPokemonsForRemoveFromFavorites);
+      bloc.add(
+        const RemovePokemonFromFavoriteEvent(
+          pokemon: tPokemon,
+        ),
+      );
     }
 
     setUpMockRemoveFromFavoriteUsecase() {
@@ -333,7 +294,7 @@ void main() {
       () async {
         // arrange
         setUpMockRemoveFromFavoriteUsecase();
-        setUpMockPokemonHelper();
+
         // act
         addTestRemoveFromFavoriteEventToBloc();
         await untilCalled(mockRemovePokemonFromFavoritesLocalUseCase(any));
@@ -345,39 +306,15 @@ void main() {
     );
 
     test(
-      'should update the current list of pokemons',
-      () async {
-        // arrange
-        setUpMockRemoveFromFavoriteUsecase();
-        setUpMockPokemonHelper();
-
-        // act
-        addTestRemoveFromFavoriteEventToBloc();
-        await untilCalled(mockPokemonHelper.changePokemonFavoriteState(
-            isFavorite: false,
-            pokemon: tPokemon,
-            pokemons: tPokemonsForRemoveFromFavorites));
-
-        // assert
-        verify(mockPokemonHelper.changePokemonFavoriteState(
-          pokemon: tPokemon,
-          isFavorite: false,
-          pokemons: tPokemonsForRemoveFromFavorites,
-        ));
-      },
-    );
-    test(
       'should emit a [PokemonRemovedFromFavoriteState] when success entity is returned',
       () async {
         // arrange
         setUpMockRemoveFromFavoriteUsecase();
-        setUpMockPokemonHelper();
 
         // assert later
         final expected = [
-          PokemonRemovedFromFavoriteState(
+          const PokemonRemovedFromFavoriteState(
             pokemon: tPokemon,
-            newPokemons: expectedPokemonsForRemoveFromFavorites,
           ),
         ];
 
@@ -394,7 +331,6 @@ void main() {
 
         when(mockRemovePokemonFromFavoritesLocalUseCase(any))
             .thenAnswer((_) async => Left(CacheFailure()));
-        setUpMockPokemonHelper();
 
         // assert later
         final expected = [

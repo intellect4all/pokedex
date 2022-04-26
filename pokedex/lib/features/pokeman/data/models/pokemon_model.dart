@@ -40,7 +40,7 @@ class PokemonModel extends Pokemon {
       types: getTypesFromMap(json['types'] ?? []),
       stats: AllStatsModel.fromJson(json['stats']),
       imageUrl: getImageUrlFromMap(json['sprites']),
-      isFavorite: false,
+      isFavorite: json['isFavorite'] ?? false,
     );
   }
 
@@ -53,7 +53,7 @@ class PokemonModel extends Pokemon {
     return types;
   }
 
-  static String getImageUrlFromMap(Map<String, dynamic> rawData) {
+  static String getImageUrlFromMap(dynamic rawData) {
     return rawData['other']?['official-artwork']?['front_default']
             ?.toString() ??
         '';
@@ -65,11 +65,14 @@ class PokemonModel extends Pokemon {
       'id': id,
       'name': name,
       'sprites': {
-        "official-artwork": {"front_default": imageUrl}
+        "other": {
+          "official-artwork": {"front_default": imageUrl}
+        }
       },
       'stats': stats.toJson(),
       'weight': weight,
       "types": getTypesJson(),
+      'isFavorite': isFavorite,
     };
   }
 

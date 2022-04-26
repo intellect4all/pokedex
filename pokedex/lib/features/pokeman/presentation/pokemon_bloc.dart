@@ -7,7 +7,7 @@ import 'package:pokedex/features/pokeman/domain/usecases/add_pokemon_to_favorite
 import 'package:pokedex/features/pokeman/domain/usecases/get_initial_pokemons_usecase.dart';
 import 'package:pokedex/features/pokeman/domain/usecases/get_more_pokemons_usecase.dart';
 import 'package:pokedex/features/pokeman/domain/usecases/remove_pokemon_from_favorites_local_usecase.dart';
-import 'package:pokedex/features/pokeman/presentation/pokemon_helper.dart';
+// import 'package:pokedex/features/pokeman/presentation/pokemon_helper.dart';
 
 part 'pokemon_event.dart';
 part 'pokemon_state.dart';
@@ -18,7 +18,6 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
   final AddPokemonToFavoritesLocalUseCase _addPokemonToFavoritesLocalUseCase;
   final RemovePokemonFromFavoritesLocalUseCase
       _removePokemonFromFavoritesLocalUseCase;
-  final PokemonHelper _pokemonHelper;
 
   PokemonBloc({
     required GetInitialPokemonsUseCase getInitialPokemonsUseCase,
@@ -27,7 +26,6 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
         addPokemonToFavoritesLocalUseCase,
     required RemovePokemonFromFavoritesLocalUseCase
         removePokemonFromFavoritesLocalUseCase,
-    required PokemonHelper pokemonHelper,
   })  : _getInitialPokemonsUseCase = getInitialPokemonsUseCase,
         _getMorePokemonsUseCase = getMorePokemonsUseCase,
         _addPokemonToFavoritesLocalUseCase = addPokemonToFavoritesLocalUseCase,
@@ -35,7 +33,6 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
             removePokemonFromFavoritesLocalUseCase,
 
         //pokemon helper
-        _pokemonHelper = pokemonHelper,
         super(PokemonInitialState()) {
     on<LoadInitialPokemonsEvent>(
         (event, emit) async => await _getInitialPokemons(event, emit));
@@ -90,13 +87,8 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
       (failure) => emit(const FavoritePokemonsErrorState(
           message: ADD_TO_FAVORITES_ERROR_MESSAGE)),
       (success) {
-        final newPokemons = _pokemonHelper.changePokemonFavoriteState(
-            pokemon: event.pokemonToFavorite,
-            isFavorite: true,
-            pokemons: event.currentPokemons);
         emit(PokemonAddedToFavoriteState(
           pokemon: event.pokemonToFavorite,
-          newPokemons: newPokemons,
         ));
       },
     );
@@ -112,14 +104,11 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
       (failure) => emit(const FavoritePokemonsErrorState(
           message: REMOVE_FROM_FAVORITES_ERROR_MESSAGE)),
       (success) {
-        final newPokemons = _pokemonHelper.changePokemonFavoriteState(
+        emit(
+          PokemonRemovedFromFavoriteState(
             pokemon: event.pokemon,
-            isFavorite: false,
-            pokemons: event.currentPokemons);
-        emit(PokemonRemovedFromFavoriteState(
-          pokemon: event.pokemon,
-          newPokemons: newPokemons,
-        ));
+          ),
+        );
       },
     );
   }

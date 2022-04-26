@@ -22,4 +22,20 @@ class PokemonHelper {
       return pokemons;
     }
   }
+
+  Iterable<Pokemon> cleansPokemons({
+    required List<Pokemon> newPokemons,
+    required List<Pokemon> currentPokemons,
+  }) {
+    List<Pokemon> cleansedPokemon = [];
+    cleansedPokemon.addAll(currentPokemons);
+    for (var pokemon in newPokemons) {
+      cleansedPokemon.removeWhere((element) => element.id == pokemon.id);
+    }
+
+    cleansedPokemon.addAll(newPokemons);
+
+    cleansedPokemon.sort(((a, b) => a.id.compareTo(b.id)));
+    return cleansedPokemon;
+  }
 }
