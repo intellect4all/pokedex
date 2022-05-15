@@ -292,7 +292,7 @@ class _PokemonHomeScreenState extends State<PokemonHomeScreen> {
   }
 
   bool displayIs(DisplayState displayState) {
-    return displayState == currentDisplayState ? true : false;
+    return displayState == currentDisplayState;
   }
 
   void _loadMorePokemons() {

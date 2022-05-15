@@ -64,10 +64,6 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
       }
       return pokemons;
     } else {
-      log(responseFromListPokemons.body.toString());
-      log(responseFromListPokemons.statusCode.toString());
-      debugPrint(responseFromListPokemons.body.toString());
-      debugPrint(responseFromListPokemons.statusCode.toString());
       throw ServerException();
     }
   }
@@ -98,10 +94,6 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
       }
       return pokemons;
     } else {
-      log(responseFromListPokemons.body.toString());
-      log(responseFromListPokemons.statusCode.toString());
-      debugPrint(responseFromListPokemons.body.toString());
-      debugPrint(responseFromListPokemons.statusCode.toString());
       throw ServerException();
     }
   }

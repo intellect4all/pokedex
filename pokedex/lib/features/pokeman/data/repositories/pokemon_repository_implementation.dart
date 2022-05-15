@@ -111,7 +111,8 @@ class PokemonRepositoryImpl extends PokemonRepository {
     try {
       final pokemonModel = PokemonModel.fromPokemon(pokemon);
       final result = await localDataSource.removeFavoritePokemon(
-          PokemonModel.fromPokemon(pokemonModel.copyWith(isFavorite: false)));
+        pokemonModel.copyWith(isFavorite: false),
+      );
       return Right(result);
     } catch (e) {
       return Left(CacheFailure());
